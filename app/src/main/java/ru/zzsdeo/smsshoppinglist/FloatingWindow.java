@@ -35,25 +35,10 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompleteListener<Cursor>{
 
-/**
- * This implementation provides multiple windows. You may extend this class or
- * use it as a reference for a basic foundation for your own windows.
- * 
- * <p>
- * Functionality includes system window decorators, moveable, resizeable,
- * hideable, closeable, and bring-to-frontable.
- * 
- * <p>
- * The persistent notification creates new windows. The hidden notifications
- * restores previously hidden windows.
- * 
- * @author Mark Wei <markwei@gmail.com>
- * 
- */
-public class FloatingWindow extends StandOutWindow implements LoaderManager.LoaderCallbacks<Cursor>{
-
-    private SimpleCursorAdapter adapter;
+    private MySimpleCursorAdapter adapter;
+    CursorLoader mCursorLoader;
 
 	@Override
 	public String getAppName() {
@@ -70,7 +55,16 @@ public class FloatingWindow extends StandOutWindow implements LoaderManager.Load
 		return "";
 	}
 
-	@Override
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        String[] projection = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
+        mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI, projection, null, null, null);
+        mCursorLoader.registerListener(0, this);
+        mCursorLoader.startLoading();
+    }
+
+    @Override
 	public void createAndAttachView(int id, FrameLayout frame) {
 		// create a new layout from body.xml
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -91,16 +85,17 @@ public class FloatingWindow extends StandOutWindow implements LoaderManager.Load
                 values.put(ListTable.COLUMN_ITEM, item);
                 values.put(ListTable.COLUMN_CHECKED, 0);
                 getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI, values);
+                addItemInputText.setText("");
             }
         });
 
         // Fields from the database (projection)
         // Must include the _id column for the adapter to work
-        String[] from = new String[] { ListTable.COLUMN_ITEM };
+        String[] from = new String[] { ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
         // Fields on the UI to which we map
-        int[] to = new int[] { R.id.item };
-        //initLoader(0, null, this);
-        adapter = new SimpleCursorAdapter(this, R.layout.list_item, null, from, to, 0);
+        int[] to = new int[] { R.id.item, R.id.checkBoxItem };
+        mCursorLoader.forceLoad();
+        adapter = new MySimpleCursorAdapter(this, R.layout.list_item, null, from, to, 0);
         shoppingList.setAdapter(adapter);
 	}
 
@@ -163,7 +158,18 @@ public class FloatingWindow extends StandOutWindow implements LoaderManager.Load
 		return StandOutWindow.getShowIntent(this, FloatingWindow.class, id);
 	}
 
-	@Override
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // Stop the cursor loader
+        if (mCursorLoader != null) {
+            mCursorLoader.unregisterListener(this);
+            mCursorLoader.cancelLoad();
+            mCursorLoader.stopLoading();
+        }
+    }
+
+    @Override
 	public Animation getShowAnimation(int id) {
 		if (isExistingId(id)) {
 			// restore
@@ -270,19 +276,8 @@ public class FloatingWindow extends StandOutWindow implements LoaderManager.Load
 	}
 
     @Override
-    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        String[] projection = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
-        return new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI, projection, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+    public void onLoadComplete(Loader<Cursor> cursorLoader, Cursor cursor) {
         adapter.swapCursor(cursor);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> cursorLoader) {
-        adapter.swapCursor(null);
     }
 
 	/*@Override
