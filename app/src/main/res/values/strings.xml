@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SMS список покупок</string>
+    <string name="add">+</string>
+    <string name="hidden">Список покупок свернут</string>
+    <string name="click_to_restore">Нажмите, чтобы развернуть</string>
+    <string name="running">Приложение запущено</string>
 </resources>
