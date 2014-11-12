@@ -89,14 +89,6 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
         mCursorLoader.forceLoad();
         adapter = new ShoppingListCursorAdapter(this, null, 0);
         shoppingList.setAdapter(adapter);
-        shoppingList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-                inflater.inflate(wei.mark.standout.R.layout.drop_down_list_item, null, false);
-                return false;
-            }
-        });
 	}
 
 	// every window is initially same size
@@ -203,8 +195,8 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
         // add default drop down items
         items.add(new DropDownListItem(
-                android.R.drawable.ic_menu_close_clear_cancel, "Quit "
-                , new Runnable() {
+                android.R.drawable.ic_menu_close_clear_cancel, getString(R.string.quit),
+            new Runnable() {
 
             @Override
             public void run() {
@@ -274,6 +266,29 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 								.show();
 					}
 				}));
+        items.add(new DropDownListItem(android.R.drawable.ic_menu_delete,
+                getString(R.string.delete_all), new Runnable() {
+
+            @Override
+            public void run() {
+                getContentResolver().delete(ShoppingListContentProvider.CONTENT_URI, null, null);
+                Toast.makeText(FloatingWindow.this,
+                        getString(R.string.list_cleared), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }));
+        items.add(new DropDownListItem(android.R.drawable.ic_menu_set_as,
+                getString(R.string.delete_checked), new Runnable() {
+
+            @Override
+            public void run() {
+                if (getContentResolver().delete(ShoppingListContentProvider.CONTENT_URI, ListTable.COLUMN_CHECKED + "=" + 1, null) != 0) {
+                    Toast.makeText(FloatingWindow.this,
+                            getString(R.string.checked_deleted), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        }));
 		return items;
 	}
 

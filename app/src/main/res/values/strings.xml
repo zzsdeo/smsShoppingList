@@ -4,4 +4,9 @@
     <string name="hidden">Список покупок свернут</string>
     <string name="click_to_restore">Нажмите, чтобы развернуть</string>
     <string name="running">Приложение запущено</string>
+    <string name="quit">Выход</string>
+    <string name="delete_all">Удалить все</string>
+    <string name="delete_checked">Удалить отмеченное</string>
+    <string name="list_cleared">Список очищен</string>
+    <string name="checked_deleted">Отмеченное удалено</string>
 </resources>
