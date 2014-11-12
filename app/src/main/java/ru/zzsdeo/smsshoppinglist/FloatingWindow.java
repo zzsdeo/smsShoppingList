@@ -7,23 +7,21 @@ import wei.mark.standout.StandOutWindow;
 import wei.mark.standout.constants.StandOutFlags;
 import wei.mark.standout.ui.Window;
 
-import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -31,13 +29,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompleteListener<Cursor>{
 
-    private MySimpleCursorAdapter adapter;
+    private ShoppingListCursorAdapter adapter;
     CursorLoader mCursorLoader;
 
 	@Override
@@ -59,7 +56,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     public void onCreate() {
         super.onCreate();
         String[] projection = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
-        mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI, projection, null, null, null);
+        mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI, projection, null, null, ListTable.COLUMN_CHECKED);
         mCursorLoader.registerListener(0, this);
         mCursorLoader.startLoading();
     }
@@ -89,20 +86,23 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             }
         });
 
-        // Fields from the database (projection)
-        // Must include the _id column for the adapter to work
-        String[] from = new String[] { ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
-        // Fields on the UI to which we map
-        int[] to = new int[] { R.id.item, R.id.checkBoxItem };
         mCursorLoader.forceLoad();
-        adapter = new MySimpleCursorAdapter(this, R.layout.list_item, null, from, to, 0);
+        adapter = new ShoppingListCursorAdapter(this, null, 0);
         shoppingList.setAdapter(adapter);
+        shoppingList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+                inflater.inflate(wei.mark.standout.R.layout.drop_down_list_item, null, false);
+                return false;
+            }
+        });
 	}
 
 	// every window is initially same size
 	@Override
 	public StandOutLayoutParams getParams(int id, Window window) {
-		return new StandOutLayoutParams(id, 400, 300,
+		return new StandOutLayoutParams(id, 500, 500,
 				StandOutLayoutParams.AUTO_POSITION,
 				StandOutLayoutParams.AUTO_POSITION, 100, 100);
 	}
@@ -118,6 +118,8 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 				//| StandOutFlags.FLAG_WINDOW_BRING_TO_FRONT_ON_TAP
 				| StandOutFlags.FLAG_WINDOW_EDGE_LIMITS_ENABLE
                 | StandOutFlags.FLAG_DECORATION_CLOSE_DISABLE
+                //| StandOutFlags.FLAG_WINDOW_FOCUS_INDICATOR_DISABLE
+                //| StandOutFlags.FLAG_WINDOW_FOCUSABLE_DISABLE
 				| StandOutFlags.FLAG_WINDOW_PINCH_RESIZE_ENABLE;
 	}
 
