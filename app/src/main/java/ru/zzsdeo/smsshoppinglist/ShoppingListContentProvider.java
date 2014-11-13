@@ -67,8 +67,10 @@ public class ShoppingListContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
             case LIST_ITEMS:
+                queryBuilder.setTables(ListTable.TABLE_LIST);
                 break;
             case PRODUCTS_ITEMS:
+                queryBuilder.setTables(ProductsTable.TABLE_PRODUCTS);
                 break;
             case LIST_ITEM_ID:
                 // Set the table
