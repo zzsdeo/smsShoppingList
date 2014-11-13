@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="milk">молоко</string>
+    <string name="bread">хлеб</string>
+    <string name="butter">масло</string>
+    <string name="sugar">сахар</string>
+    <string name="meat">мясо</string>
+    <string name="eggs">яйца</string>
+    <string name="cucumbers">огурцы</string>
+    <string name="tomato">помидоры</string>
+    <string name="potato">картофель</string>
+    <string name="cheese">сыр</string>
+</resources>

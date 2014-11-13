@@ -37,14 +37,14 @@
             android:id="@+id/hide"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/hide"
+            android:background="@android:drawable/ic_menu_upload"
             android:contentDescription="@string/hide" />
 
         <ImageView
             android:id="@+id/maximize"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@drawable/maximize"
+            android:background="@android:drawable/ic_menu_view"
             android:contentDescription="@string/maximize" />
 
         <ImageView

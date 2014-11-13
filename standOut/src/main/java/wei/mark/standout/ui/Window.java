@@ -381,7 +381,9 @@ public class Window extends FrameLayout {
 		// icon
 		final ImageView icon = (ImageView) decorations
 				.findViewById(R.id.window_icon);
-		icon.setImageResource(mContext.getAppIcon());
+        //TODO вернуть все как было
+        //icon.setImageResource(mContext.getAppIcon());
+		icon.setImageResource(android.R.drawable.ic_menu_more);
 		icon.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -398,7 +400,7 @@ public class Window extends FrameLayout {
 		title.setText(mContext.getTitle(id));
 
 		// hide
-		View hide = decorations.findViewById(R.id.hide);
+        View hide = decorations.findViewById(R.id.hide);
 		hide.setOnClickListener(new OnClickListener() {
 
 			@Override

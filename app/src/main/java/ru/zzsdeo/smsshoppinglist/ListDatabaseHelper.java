@@ -19,6 +19,7 @@ public class ListDatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         ListTable.onCreate(database);
+        ProductsTable.onCreate(database);
     }
 
     // Method is called during an upgrade of the database,
@@ -27,6 +28,7 @@ public class ListDatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase database, int oldVersion,
                           int newVersion) {
         ListTable.onUpgrade(database, oldVersion, newVersion);
+        ProductsTable.onUpgrade(database, oldVersion, newVersion);
     }
 
 }

@@ -9,4 +9,5 @@
     <string name="delete_checked">Удалить отмеченное</string>
     <string name="list_cleared">Список очищен</string>
     <string name="checked_deleted">Отмеченное удалено</string>
+    <string name="add_item_hint"></string>
 </resources>

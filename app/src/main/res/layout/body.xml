@@ -19,13 +19,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/addItemInputText"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:hint="@string/add_item_hint" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/addItemBtn"
-                android:background="@android:drawable/ic_input_add"
+                android:background="@android:drawable/ic_menu_add"
                 android:contentDescription="@string/add" />
         </LinearLayout>
 

@@ -50,7 +50,7 @@ public class ShoppingListCursorAdapter extends CursorAdapter {
                         } else {
                             values.put(ListTable.COLUMN_CHECKED, 0);
                         }
-                        context.getContentResolver().update(ShoppingListContentProvider.CONTENT_URI, values, "_id = " + obj, null);
+                        context.getContentResolver().update(ShoppingListContentProvider.CONTENT_URI_LIST, values, "_id = " + obj, null);
                     }
                 }
             }

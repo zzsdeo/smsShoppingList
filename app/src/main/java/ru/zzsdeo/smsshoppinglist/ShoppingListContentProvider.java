@@ -21,14 +21,19 @@ public class ShoppingListContentProvider extends ContentProvider {
     private ListDatabaseHelper database;
 
     // used for the UriMacher
-    private static final int LIST = 10;
-    private static final int ITEM_ID = 20;
+    private static final int LIST_ITEMS = 10;
+    private static final int LIST_ITEM_ID = 20;
+    private static final int PRODUCTS_ITEMS = 30;
+    private static final int PRODUCTS_ITEM_ID = 40;
 
     private static final String AUTHORITY = "ru.zzsdeo.smsshoppinglist.contentprovider";
 
-    private static final String BASE_PATH = "list";
-    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY
-            + "/" + BASE_PATH);
+    private static final String LIST_PATH = "list";
+    private static final String PRODUCTS_PATH = "products";
+    public static final Uri CONTENT_URI_LIST = Uri.parse("content://" + AUTHORITY
+            + "/" + LIST_PATH);
+    public static final Uri CONTENT_URI_PRODUCTS = Uri.parse("content://" + AUTHORITY
+            + "/" + PRODUCTS_PATH);
 
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
             + "/list";
@@ -37,8 +42,10 @@ public class ShoppingListContentProvider extends ContentProvider {
 
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH, LIST);
-        sURIMatcher.addURI(AUTHORITY, BASE_PATH + "/#", ITEM_ID);
+        sURIMatcher.addURI(AUTHORITY, LIST_PATH, LIST_ITEMS);
+        sURIMatcher.addURI(AUTHORITY, LIST_PATH + "/#", LIST_ITEM_ID);
+        sURIMatcher.addURI(AUTHORITY, PRODUCTS_PATH, PRODUCTS_ITEMS);
+        sURIMatcher.addURI(AUTHORITY, PRODUCTS_PATH + "/#", PRODUCTS_ITEM_ID);
     }
 
     @Override
@@ -57,16 +64,24 @@ public class ShoppingListContentProvider extends ContentProvider {
         // check if the caller has requested a column which does not exists
         checkColumns(projection);
 
-        // Set the table
-        queryBuilder.setTables(ListTable.TABLE_LIST);
-
         int uriType = sURIMatcher.match(uri);
         switch (uriType) {
-            case LIST:
+            case LIST_ITEMS:
                 break;
-            case ITEM_ID:
+            case PRODUCTS_ITEMS:
+                break;
+            case LIST_ITEM_ID:
+                // Set the table
+                queryBuilder.setTables(ListTable.TABLE_LIST);
                 // adding the ID to the original query
                 queryBuilder.appendWhere(ListTable.COLUMN_ID + "="
+                        + uri.getLastPathSegment());
+                break;
+            case PRODUCTS_ITEM_ID:
+                // Set the table
+                queryBuilder.setTables(ProductsTable.TABLE_PRODUCTS);
+                // adding the ID to the original query
+                queryBuilder.appendWhere(ProductsTable.COLUMN_ID + "="
                         + uri.getLastPathSegment());
                 break;
             default:
@@ -93,15 +108,21 @@ public class ShoppingListContentProvider extends ContentProvider {
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted = 0;
         long id = 0;
+        String path;
         switch (uriType) {
-            case LIST:
+            case LIST_ITEMS:
                 id = sqlDB.insert(ListTable.TABLE_LIST, null, values);
+                path = LIST_PATH;
+                break;
+            case PRODUCTS_ITEMS:
+                id = sqlDB.insert(ProductsTable.TABLE_PRODUCTS, null, values);
+                path = PRODUCTS_PATH;
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        return Uri.parse(BASE_PATH + "/" + id);
+        return Uri.parse(path + "/" + id);
     }
 
     @Override
@@ -109,13 +130,14 @@ public class ShoppingListContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsDeleted = 0;
+        String id;
         switch (uriType) {
-            case LIST:
+            case LIST_ITEMS:
                 rowsDeleted = sqlDB.delete(ListTable.TABLE_LIST, selection,
                         selectionArgs);
                 break;
-            case ITEM_ID:
-                String id = uri.getLastPathSegment();
+            case LIST_ITEM_ID:
+                id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsDeleted = sqlDB.delete(ListTable.TABLE_LIST,
                             ListTable.COLUMN_ID + "=" + id,
@@ -123,6 +145,23 @@ public class ShoppingListContentProvider extends ContentProvider {
                 } else {
                     rowsDeleted = sqlDB.delete(ListTable.TABLE_LIST,
                             ListTable.COLUMN_ID + "=" + id
+                                    + " and " + selection,
+                            selectionArgs);
+                }
+                break;
+            case PRODUCTS_ITEMS:
+                rowsDeleted = sqlDB.delete(ProductsTable.TABLE_PRODUCTS, selection,
+                        selectionArgs);
+                break;
+            case PRODUCTS_ITEM_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(ProductsTable.TABLE_PRODUCTS,
+                            ProductsTable.COLUMN_ID + "=" + id,
+                            null);
+                } else {
+                    rowsDeleted = sqlDB.delete(ProductsTable.TABLE_PRODUCTS,
+                            ProductsTable.COLUMN_ID + "=" + id
                                     + " and " + selection,
                             selectionArgs);
                 }
@@ -141,15 +180,16 @@ public class ShoppingListContentProvider extends ContentProvider {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
         int rowsUpdated = 0;
+        String id;
         switch (uriType) {
-            case LIST:
+            case LIST_ITEMS:
                 rowsUpdated = sqlDB.update(ListTable.TABLE_LIST,
                         values,
                         selection,
                         selectionArgs);
                 break;
-            case ITEM_ID:
-                String id = uri.getLastPathSegment();
+            case LIST_ITEM_ID:
+                id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsUpdated = sqlDB.update(ListTable.TABLE_LIST,
                             values,
@@ -164,6 +204,28 @@ public class ShoppingListContentProvider extends ContentProvider {
                             selectionArgs);
                 }
                 break;
+            case PRODUCTS_ITEMS:
+                rowsUpdated = sqlDB.update(ProductsTable.TABLE_PRODUCTS,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            case PRODUCTS_ITEM_ID:
+                id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(ProductsTable.TABLE_PRODUCTS,
+                            values,
+                            ProductsTable.COLUMN_ID + "=" + id,
+                            null);
+                } else {
+                    rowsUpdated = sqlDB.update(ProductsTable.TABLE_PRODUCTS,
+                            values,
+                            ProductsTable.COLUMN_ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
+                }
+                break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
@@ -172,7 +234,13 @@ public class ShoppingListContentProvider extends ContentProvider {
     }
 
     private void checkColumns(String[] projection) {
-        String[] available = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
+        String[] available = {
+                ListTable.COLUMN_ID,
+                ListTable.COLUMN_ITEM,
+                ListTable.COLUMN_CHECKED,
+                ProductsTable.COLUMN_ID,
+                ProductsTable.COLUMN_ITEM
+        };
         if (projection != null) {
             HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
             HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(available));
