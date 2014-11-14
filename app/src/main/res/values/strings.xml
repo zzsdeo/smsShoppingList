@@ -9,5 +9,8 @@
     <string name="delete_checked">Удалить отмеченное</string>
     <string name="list_cleared">Список очищен</string>
     <string name="checked_deleted">Отмеченное удалено</string>
-    <string name="add_item_hint"></string>
+    <string name="add_item_hint">Добавить</string>
+    <string name="settings">Настройки</string>
+    <string name="manage_autocomplete">Управление автодополнением</string>
+    <string name="manage_autocompelte_summary">Добавление, удаление и редактирование списка продуктов, предназначенного для корректной работы автоматического распознавания из SMS и автодополнения при вводе названий.</string>
 </resources>

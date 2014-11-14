@@ -17,6 +17,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/settings"/>
+        <activity
+            android:name=".ProductsActivity"
+            android:label="@string/manage_autocomplete"/>
 
         <service android:name=".FloatingWindow" >
         </service>

@@ -17,7 +17,7 @@ public class ProductsTable {
             + TABLE_PRODUCTS
             + "("
             + COLUMN_ID + " integer primary key autoincrement, "
-            + COLUMN_ITEM + " text not null"
+            + COLUMN_ITEM + " text not null unique"
             + ");";
     private static String[] defaultProducts = {
             "молоко",

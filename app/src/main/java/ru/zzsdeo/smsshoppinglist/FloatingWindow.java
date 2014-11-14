@@ -13,6 +13,8 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.FilterQueryProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -73,14 +76,44 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
         final ImageButton addItemBtn = (ImageButton) view.findViewById(R.id.addItemBtn);
         final ListView shoppingList = (ListView) view.findViewById(R.id.shoppingList);
 
-        //ArrayAdapter<String> acAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {"11qwe", "11rty", "11asd", "11fgh", "11zxc", "11vbn", "11123", "456", "poi"});
-        //SimpleCursorAdapter scAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_list_item_1, getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, new String[] {"item"}, null, null, null), new String[] {"item"}, null, 0);
-        //addItemInputText.setAdapter(scAdapter);
+        final SimpleCursorAdapter scAdapter = new SimpleCursorAdapter(this,
+                android.R.layout.simple_list_item_1,
+                getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, new String[] {ProductsTable.COLUMN_ITEM, ProductsTable.COLUMN_ID}, null, null, null),
+                new String[] {ProductsTable.COLUMN_ITEM, ProductsTable.COLUMN_ID},
+                new int[] {android.R.id.text1},
+                0);
+        addItemInputText.setAdapter(scAdapter);
+        scAdapter.setStringConversionColumn(getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, null).getColumnIndexOrThrow(ProductsTable.COLUMN_ITEM));
+        scAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            public Cursor runQuery(CharSequence constraint) {
+                String partialValue = null;
+                if (constraint != null) {
+                    partialValue = constraint.toString();
+                }
+                return getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + partialValue + "%" + '"', null, null);
+            }
+        });
+        addItemInputText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+                scAdapter.getFilter().filter(charSequence.toString().toLowerCase());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //scAdapter.getFilter().filter(editable.toString());
+            }
+        });
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String item = addItemInputText.getText().toString();
+                String item = addItemInputText.getText().toString().toLowerCase();
                 if (item.length() == 0) {
                     return;
                 }
@@ -88,6 +121,9 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
                 values.put(ListTable.COLUMN_ITEM, item);
                 values.put(ListTable.COLUMN_CHECKED, 0);
                 getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_LIST, values);
+                values.clear();
+                values.put(ProductsTable.COLUMN_ITEM, item);
+                getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, values);
                 addItemInputText.setText("");
             }
         });
@@ -250,40 +286,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
 	public List<DropDownListItem> getDropDownItems(int id) {
 		List<DropDownListItem> items = new ArrayList<DropDownListItem>();
-		items.add(new DropDownListItem(android.R.drawable.ic_menu_help,
-				"About", new Runnable() {
 
-					@Override
-					public void run() {
-						Toast.makeText(
-								FloatingWindow.this,
-								getAppName()
-										+ " is a demonstration of StandOut.",
-								Toast.LENGTH_SHORT).show();
-					}
-				}));
-		items.add(new DropDownListItem(android.R.drawable.ic_menu_preferences,
-				"Settings", new Runnable() {
-
-					@Override
-					public void run() {
-						Toast.makeText(FloatingWindow.this,
-								"There are no settings.", Toast.LENGTH_SHORT)
-								.show();
-					}
-				}));
-        items.add(new DropDownListItem(android.R.drawable.ic_menu_delete,
-                getString(R.string.delete_all), new Runnable() {
-
-            @Override
-            public void run() {
-                if (getContentResolver().delete(ShoppingListContentProvider.CONTENT_URI_LIST, null, null) != 0) {
-                    Toast.makeText(FloatingWindow.this,
-                            getString(R.string.list_cleared), Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-        }));
         items.add(new DropDownListItem(android.R.drawable.ic_menu_set_as,
                 getString(R.string.delete_checked), new Runnable() {
 
@@ -296,6 +299,31 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
                 }
             }
         }));
+
+        items.add(new DropDownListItem(android.R.drawable.ic_menu_delete,
+                getString(R.string.delete_all), new Runnable() {
+
+            @Override
+            public void run() {
+                if (getContentResolver().delete(ShoppingListContentProvider.CONTENT_URI_LIST, null, null) != 0) {
+                    Toast.makeText(FloatingWindow.this,
+                            getString(R.string.list_cleared), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+        }));
+
+		items.add(new DropDownListItem(android.R.drawable.ic_menu_preferences,
+				getString(R.string.settings), new Runnable() {
+
+            @Override
+            public void run() {
+                Intent i = new Intent (getApplicationContext(), SettingsActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+		}));
+
 		return items;
 	}
 

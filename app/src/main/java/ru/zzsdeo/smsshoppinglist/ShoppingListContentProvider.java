@@ -108,8 +108,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsDeleted = 0;
-        long id = 0;
+        long id;
         String path;
         switch (uriType) {
             case LIST_ITEMS:
@@ -131,7 +130,7 @@ public class ShoppingListContentProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsDeleted = 0;
+        int rowsDeleted;
         String id;
         switch (uriType) {
             case LIST_ITEMS:
@@ -181,7 +180,7 @@ public class ShoppingListContentProvider extends ContentProvider {
 
         int uriType = sURIMatcher.match(uri);
         SQLiteDatabase sqlDB = database.getWritableDatabase();
-        int rowsUpdated = 0;
+        int rowsUpdated;
         String id;
         switch (uriType) {
             case LIST_ITEMS:
