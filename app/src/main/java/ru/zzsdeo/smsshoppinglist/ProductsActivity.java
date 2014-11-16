@@ -2,13 +2,28 @@ package ru.zzsdeo.smsshoppinglist;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.FilterQueryProvider;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.TextView;
 
 import wei.mark.standout.StandOutWindow;
 
@@ -20,10 +35,41 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
     private ProductsCursorAdapter adapter;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.products_menu, menu);
+        SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView search = (SearchView) menu.findItem(R.id.search).getActionView();
+        search.setSearchableInfo(manager.getSearchableInfo(getComponentName()));
+        search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.getFilter().filter(query.toLowerCase());
+                return true;
+
+            }
+
+        });
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.add_item:
+                DialogFragment df = new AddUpdateProductsDialog();
+                Bundle args = new Bundle();
+                args.putString("title", getString(R.string.add_item_hint));
+                df.setArguments(args);
+                df.show(getFragmentManager(), "addDialog");
                 return true;
             default:
                 return false;
@@ -42,11 +88,75 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
             bar.setDisplayHomeAsUpEnabled(true);
         }
 
-        ListView productsList = (ListView) findViewById(R.id.productsList);
+        final ListView productsList = (ListView) findViewById(R.id.productsList);
 
         adapter = new ProductsCursorAdapter(this, null, 0);
+        adapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence charSequence) {
+                return getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + charSequence.toString().toLowerCase() + "%" + '"', null, null);
+            }
+        });
         productsList.setAdapter(adapter);
+        productsList.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        productsList.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+                actionMode.setTitle(getString(R.string.selected) + " " + productsList.getCheckedItemCount());
+            }
 
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.context_menu, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.itemDelete:
+                        long[] id = productsList.getCheckedItemIds();
+                        if (id.length != 0) {
+                            for (long l : id) {
+                                getContentResolver().delete(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, ProductsTable.COLUMN_ID + "=" + l, null);
+                            }
+                        }
+                        actionMode.finish();
+                        return true;
+                    case R.id.selectAll:
+                        for (int i = adapter.getCount() - 1; i >= 0; i--) {
+                            productsList.setItemChecked(i, true);
+                        }
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+
+            }
+        });
+        productsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                DialogFragment df = new AddUpdateProductsDialog();
+                Bundle args = new Bundle();
+                TextView tv = (TextView) view.findViewById(R.id.productsItem);
+                args.putString("title", getString(R.string.update));
+                args.putString("item", tv.getText().toString().toLowerCase());
+                args.putLong("id", l);
+                df.setArguments(args);
+                df.show(getFragmentManager(), "updateDialog");
+            }
+        });
     }
 
     @Override

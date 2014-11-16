@@ -18,7 +18,6 @@ public class SettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        StandOutWindow.closeAll(this, FloatingWindow.class);
         StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
     }
 
@@ -38,7 +37,7 @@ public class SettingsActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
 
-        StandOutWindow.hide(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+        StandOutWindow.closeAll(this, FloatingWindow.class);
 
         ActionBar bar = getActionBar();
         if (bar != null) {

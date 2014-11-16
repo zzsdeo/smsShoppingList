@@ -6,11 +6,19 @@
     <string name="running">Приложение запущено</string>
     <string name="quit">Выход</string>
     <string name="delete_all">Удалить все</string>
-    <string name="delete_checked">Удалить отмеченное</string>
+    <string name="delete_checked">Удалить купленное</string>
     <string name="list_cleared">Список очищен</string>
-    <string name="checked_deleted">Отмеченное удалено</string>
+    <string name="checked_deleted">Купленное удалено</string>
     <string name="add_item_hint">Добавить</string>
     <string name="settings">Настройки</string>
-    <string name="manage_autocomplete">Управление автодополнением</string>
-    <string name="manage_autocompelte_summary">Добавление, удаление и редактирование списка продуктов, предназначенного для корректной работы автоматического распознавания из SMS и автодополнения при вводе названий.</string>
+    <string name="manage_autocomplete">Управление словарем</string>
+    <string name="manage_autocompelte_summary">Добавление, удаление и редактирование словаря продуктов, предназначенного для корректной работы автоматического распознавания из SMS, автодополнения при вводе названий, а также формирования типового списка покупок.</string>
+    <string name="delete">Удалить</string>
+    <string name="selected">Выбрано:</string>
+    <string name="cancel">Отмена</string>
+    <string name="update">Обновить</string>
+    <string name="search">Поиск</string>
+    <string name="select_all">Выбрать все</string>
+    <string name="divider_setting">Разделитель списка покупок</string>
+    <string name="divider_setting_summary">По умолчанию в качестве разделителя списка покупок из SMS используется \",\". Можно настроить свой разделитель, например \";\" или \"/\".</string>
 </resources>

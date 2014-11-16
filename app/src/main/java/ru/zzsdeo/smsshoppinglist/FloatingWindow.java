@@ -106,14 +106,14 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
             @Override
             public void afterTextChanged(Editable editable) {
-                //scAdapter.getFilter().filter(editable.toString());
+
             }
         });
 
         addItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String item = addItemInputText.getText().toString().toLowerCase();
+                String item = addItemInputText.getText().toString().toLowerCase().trim();
                 if (item.length() == 0) {
                     return;
                 }

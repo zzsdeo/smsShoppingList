@@ -31,7 +31,7 @@ public class ProductsCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
-        EditText et = (EditText) view.findViewById(R.id.productsItem);
-        et.setText(cursor.getString(cursor.getColumnIndex(ProductsTable.COLUMN_ITEM)));
+        TextView tv = (TextView) view.findViewById(R.id.productsItem);
+        tv.setText(cursor.getString(cursor.getColumnIndex(ProductsTable.COLUMN_ITEM)));
     }
 }
