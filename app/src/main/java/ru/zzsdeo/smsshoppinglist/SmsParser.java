@@ -18,10 +18,28 @@ public class SmsParser extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        boolean isList = false;
+
         String sms = intent.getExtras().getString("SMS");
+        String action = intent.getExtras().getString("action");
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String[] parsedSms = sms.split(settings.getString("divider_setting", ","));
+
+        if (action.equals("check_and_insert")) {
+            if (checkSms(parsedSms)) {
+                insertSmsInDb(parsedSms);
+            }
+            Intent i = new Intent(this, StandOutActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }
+
+        if (action.equals("insert")) {
+            insertSmsInDb(parsedSms);
+        }
+    }
+
+    private boolean checkSms (String[] parsedSms) {
+        boolean isList = false;
         Cursor c = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, null);
         for (String s : parsedSms) {
             if (c.moveToFirst()) {
@@ -36,20 +54,19 @@ public class SmsParser extends IntentService {
                 break;
             }
         }
-        if (isList) {
-            ContentValues values = new ContentValues();
-            for (String s : parsedSms) {
-                values.put(ListTable.COLUMN_ITEM, s.trim().toLowerCase());
-                values.put(ListTable.COLUMN_CHECKED, 0);
-                getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_LIST, values);
-                values.clear();
-                values.put(ProductsTable.COLUMN_ITEM, s.trim().toLowerCase());
-                getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, values);
-                values.clear();
-            }
-            Intent i = new Intent(this, StandOutActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+        return isList;
+    }
+
+    private void insertSmsInDb (String[] parsedSms) {
+        ContentValues values = new ContentValues();
+        for (String s : parsedSms) {
+            values.put(ListTable.COLUMN_ITEM, s.trim().toLowerCase());
+            values.put(ListTable.COLUMN_CHECKED, 0);
+            getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_LIST, values);
+            values.clear();
+            values.put(ProductsTable.COLUMN_ITEM, s.trim().toLowerCase());
+            getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, values);
+            values.clear();
         }
     }
 }
