@@ -39,6 +39,10 @@
                 android:resource="@xml/searchable" />
         </activity>
 
+        <activity
+            android:name="ru.zzsdeo.smsshoppinglist.ImportFromSmsActivity"
+            android:label="@string/import_from_sms" />
+
         <service
             android:name="ru.zzsdeo.smsshoppinglist.FloatingWindow" >
         </service>

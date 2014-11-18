@@ -21,4 +21,5 @@
     <string name="select_all">Выбрать все</string>
     <string name="divider_setting">Разделитель списка покупок</string>
     <string name="divider_setting_summary">По умолчанию в качестве разделителя списка покупок из SMS используется \",\". Можно настроить свой разделитель, например \";\" или \"/\".</string>
+    <string name="import_from_sms">Импорт из SMS</string>
 </resources>

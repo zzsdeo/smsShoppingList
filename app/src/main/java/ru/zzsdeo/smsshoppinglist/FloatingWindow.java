@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -286,6 +287,17 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
 	public List<DropDownListItem> getDropDownItems(int id) {
 		List<DropDownListItem> items = new ArrayList<DropDownListItem>();
+
+        items.add(new DropDownListItem(android.R.drawable.ic_menu_send,
+                getString(R.string.import_from_sms), new Runnable() {
+
+            @Override
+            public void run() {
+                Intent i = new Intent (getApplicationContext(), ImportFromSmsActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+        }));
 
         items.add(new DropDownListItem(android.R.drawable.ic_menu_set_as,
                 getString(R.string.delete_checked), new Runnable() {
