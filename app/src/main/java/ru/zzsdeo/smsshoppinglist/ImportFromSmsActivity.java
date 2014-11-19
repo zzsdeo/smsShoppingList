@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,7 +51,7 @@ public class ImportFromSmsActivity extends Activity {
 
         ListView smsList = (ListView) findViewById(R.id.smsList);
         Uri uriSms = Uri.parse("content://sms/inbox");
-        String[] from = new String[]{"_id", "body"};
+        String[] from = new String[]{"_id", "body", "address"};
         final Cursor c = getContentResolver().query(uriSms, from, null, null, null);
         ImportSmsCursorAdapter adapter = new ImportSmsCursorAdapter(this, c, 0);
         smsList.setAdapter(adapter);

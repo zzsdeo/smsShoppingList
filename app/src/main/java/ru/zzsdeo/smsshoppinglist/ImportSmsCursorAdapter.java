@@ -2,6 +2,7 @@ package ru.zzsdeo.smsshoppinglist;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,12 +23,14 @@ public class ImportSmsCursorAdapter extends CursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        return mInflater.inflate(R.layout.products_item, viewGroup, false);
+        return mInflater.inflate(R.layout.import_sms_item, viewGroup, false);
     }
 
     @Override
-    public void bindView(View view, final Context context, Cursor cursor) {
-        TextView tv = (TextView) view.findViewById(R.id.productsItem);
-        tv.setText(cursor.getString(cursor.getColumnIndex("body")));
+    public void bindView(View view, Context context, Cursor cursor) {
+        TextView tv1 = (TextView) view.findViewById(R.id.smsAddressItem);
+        tv1.setText(cursor.getString(cursor.getColumnIndex("address")));
+        TextView tv2 = (TextView) view.findViewById(R.id.smsBodyItem);
+        tv2.setText(cursor.getString(cursor.getColumnIndex("body")));
     }
 }

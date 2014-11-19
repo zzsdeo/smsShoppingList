@@ -116,7 +116,7 @@ public class ShoppingListContentProvider extends ContentProvider {
                 path = LIST_PATH;
                 break;
             case PRODUCTS_ITEMS:
-                id = sqlDB.insert(ProductsTable.TABLE_PRODUCTS, null, values);
+                id = sqlDB.insertWithOnConflict(ProductsTable.TABLE_PRODUCTS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
                 path = PRODUCTS_PATH;
                 break;
             default:
