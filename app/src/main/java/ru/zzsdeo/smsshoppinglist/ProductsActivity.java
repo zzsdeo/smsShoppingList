@@ -33,9 +33,19 @@ import wei.mark.standout.StandOutWindow;
 public class ProductsActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ProductsCursorAdapter adapter;
+    Cursor c;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (c != null) {
+            c.close();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.products_menu, menu);
         SearchManager manager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView search = (SearchView) menu.findItem(R.id.search).getActionView();
@@ -94,7 +104,8 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence charSequence) {
-                return getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + charSequence.toString().toLowerCase() + "%" + '"', null, null);
+                c = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + charSequence.toString().toLowerCase() + "%" + '"', null, null);
+                return c;
             }
         });
         productsList.setAdapter(adapter);
@@ -171,6 +182,6 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
 
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
-
+        adapter.swapCursor(null);
     }
 }

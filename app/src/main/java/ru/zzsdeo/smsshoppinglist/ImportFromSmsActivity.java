@@ -20,10 +20,15 @@ import wei.mark.standout.StandOutWindow;
  */
 public class ImportFromSmsActivity extends Activity {
 
+    Cursor c;
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+        if (c != null) {
+            c.close();
+        }
     }
 
     @Override
@@ -51,8 +56,8 @@ public class ImportFromSmsActivity extends Activity {
 
         ListView smsList = (ListView) findViewById(R.id.smsList);
         Uri uriSms = Uri.parse("content://sms/inbox");
-        String[] from = new String[]{"_id", "body", "address"};
-        final Cursor c = getContentResolver().query(uriSms, from, null, null, null);
+        String[] from = new String[]{"_id", "body", "address", "person"};
+        c = getContentResolver().query(uriSms, from, null, null, null);
         ImportSmsCursorAdapter adapter = new ImportSmsCursorAdapter(this, c, 0);
         smsList.setAdapter(adapter);
 

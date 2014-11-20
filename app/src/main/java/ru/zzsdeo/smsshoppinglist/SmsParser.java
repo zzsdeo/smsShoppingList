@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.preference.PreferenceManager;
 
+import wei.mark.standout.StandOutWindow;
+
 /**
  * Created by Andrew on 16.11.2014.
  */
@@ -28,9 +30,7 @@ public class SmsParser extends IntentService {
             if (checkSms(parsedSms)) {
                 insertSmsInDb(parsedSms);
             }
-            Intent i = new Intent(this, StandOutActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
+            StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
         }
 
         if (action.equals("insert")) {
@@ -54,6 +54,7 @@ public class SmsParser extends IntentService {
                 break;
             }
         }
+        c.close();
         return isList;
     }
 

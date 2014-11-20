@@ -38,10 +38,11 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompleteListener<Cursor>{
+public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompleteListener<Cursor> {
 
     private ShoppingListCursorAdapter adapter;
     CursorLoader mCursorLoader;
+    Cursor c1, c2, c3;
 
 	@Override
 	public String getAppName() {
@@ -77,21 +78,25 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
         final ImageButton addItemBtn = (ImageButton) view.findViewById(R.id.addItemBtn);
         final ListView shoppingList = (ListView) view.findViewById(R.id.shoppingList);
 
+        c1 = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, new String[] {ProductsTable.COLUMN_ITEM, ProductsTable.COLUMN_ID}, null, null, null);
+        c2 = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, null);
+
         final SimpleCursorAdapter scAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_list_item_1,
-                getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, new String[] {ProductsTable.COLUMN_ITEM, ProductsTable.COLUMN_ID}, null, null, null),
+                c1,
                 new String[] {ProductsTable.COLUMN_ITEM, ProductsTable.COLUMN_ID},
                 new int[] {android.R.id.text1},
                 0);
         addItemInputText.setAdapter(scAdapter);
-        scAdapter.setStringConversionColumn(getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, null).getColumnIndexOrThrow(ProductsTable.COLUMN_ITEM));
+        scAdapter.setStringConversionColumn(c2.getColumnIndexOrThrow(ProductsTable.COLUMN_ITEM));
         scAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence constraint) {
                 String partialValue = null;
                 if (constraint != null) {
                     partialValue = constraint.toString();
                 }
-                return getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + partialValue + "%" + '"', null, null);
+                c3 = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + partialValue + "%" + '"', null, null);
+                return c3;
             }
         });
         addItemInputText.addTextChangedListener(new TextWatcher() {
@@ -150,11 +155,9 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 		return StandOutFlags.FLAG_DECORATION_SYSTEM
 				| StandOutFlags.FLAG_BODY_MOVE_ENABLE
 				| StandOutFlags.FLAG_WINDOW_HIDE_ENABLE
-				//| StandOutFlags.FLAG_WINDOW_BRING_TO_FRONT_ON_TAP
 				| StandOutFlags.FLAG_WINDOW_EDGE_LIMITS_ENABLE
                 | StandOutFlags.FLAG_DECORATION_CLOSE_DISABLE
                 | StandOutFlags.FLAG_WINDOW_FOCUS_INDICATOR_DISABLE
-                //| StandOutFlags.FLAG_WINDOW_FOCUSABLE_DISABLE
 				| StandOutFlags.FLAG_WINDOW_PINCH_RESIZE_ENABLE;
 	}
 
@@ -168,13 +171,21 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 		return getString(R.string.running);
 	}
 
-/*// return an Intent that creates a new MultiWindow
-	@Override
-	public Intent getPersistentNotificationIntent(int id) {
-		return StandOutWindow.getShowIntent(this, getClass(), getUniqueId());
-	}*/
+    @Override
+    public boolean onCloseAll() {
+        if (c1 != null){
+            c1.close();
+        }
+        if (c2 != null) {
+            c2.close();
+        }
+        if (c3 != null) {
+            c3.close();
+        }
+        return super.onCloseAll();
+    }
 
-	@Override
+    @Override
 	public int getHiddenIcon() {
 		return android.R.drawable.ic_menu_upload;
 	}
@@ -343,31 +354,4 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     public void onLoadComplete(Loader<Cursor> cursorLoader, Cursor cursor) {
         adapter.swapCursor(cursor);
     }
-
-	/*@Override
-	public void onReceiveData(int id, int requestCode, Bundle data,
-			Class<? extends StandOutWindow> fromCls, int fromId) {
-		// receive data from WidgetsWindow's button press
-		// to show off the data sending framework
-		switch (requestCode) {
-			case WidgetsWindow.DATA_CHANGED_TEXT:
-				Window window = getWindow(id);
-				if (window == null) {
-					String errorText = String.format(Locale.US,
-							"%s received data but Window id: %d is not open.",
-							getAppName(), id);
-					Toast.makeText(this, errorText, Toast.LENGTH_SHORT).show();
-					return;
-				}
-				String changedText = data.getString("changedText");
-				TextView status = (TextView) window.findViewById(R.id.id);
-				status.setTextSize(20);
-				status.setText("Received data from WidgetsWindow: "
-						+ changedText);
-				break;
-			default:
-				Log.d("MultiWindow", "Unexpected data received.");
-				break;
-		}
-	}*/
 }
