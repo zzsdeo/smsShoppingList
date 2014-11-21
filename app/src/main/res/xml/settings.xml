@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="divider_setting"
-        android:title="@string/divider_setting"
-        android:summary="@string/divider_setting_summary"
-        android:defaultValue=","/>
-    <Preference
-        android:key="manage_products"
-        android:title="@string/manage_autocomplete"
-        android:summary="@string/manage_autocompelte_summary"/>
+
+    <PreferenceCategory
+        android:title="@string/main">
+        <EditTextPreference
+            android:key="divider_setting"
+            android:title="@string/divider_setting"
+            android:summary="@string/divider_setting_summary"
+            android:defaultValue=","/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/more">
+        <Preference
+            android:key="all_products_in_list"
+            android:title="@string/all_products_in_list"
+            android:summary="@string/all_products_in_list_summary" />
+        <Preference
+            android:key="manage_products"
+            android:title="@string/manage_autocomplete"
+            android:summary="@string/manage_autocompelte_summary"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

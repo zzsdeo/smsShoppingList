@@ -11,6 +11,8 @@ import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -43,8 +46,9 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     private ShoppingListCursorAdapter adapter;
     CursorLoader mCursorLoader;
     Cursor c1, c2, c3;
+    SharedPreferences preferences;
 
-	@Override
+    @Override
 	public String getAppName() {
 		return getString(R.string.app_name);
 	}
@@ -62,6 +66,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
     public void onCreate() {
         super.onCreate();
+        preferences = getSharedPreferences("layout_prefs", MODE_PRIVATE);
         String[] projection = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
         mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_LIST, projection, null, null, ListTable.COLUMN_CHECKED);
         mCursorLoader.registerListener(0, this);
@@ -142,9 +147,12 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 	// every window is initially same size
 	@Override
 	public StandOutLayoutParams getParams(int id, Window window) {
-		return new StandOutLayoutParams(id, 500, 500,
-				StandOutLayoutParams.AUTO_POSITION,
-				StandOutLayoutParams.AUTO_POSITION, 100, 100);
+		return new StandOutLayoutParams(id,
+                preferences.getInt("layout_width", 500),
+                preferences.getInt("layout_height", 500),
+                preferences.getInt("layout_x", StandOutLayoutParams.AUTO_POSITION),
+                preferences.getInt("layout_y", StandOutLayoutParams.AUTO_POSITION),
+                100, 100);
 	}
 
 	// we want the system window decorations, we want to drag the body, we want
@@ -161,7 +169,26 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 				| StandOutFlags.FLAG_WINDOW_PINCH_RESIZE_ENABLE;
 	}
 
-	@Override
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        startService(new Intent(getApplicationContext(), RestartIntentService.class));
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onClose(int id, Window window) {
+        SharedPreferences.Editor e = preferences.edit();
+        int x = window.getLayoutParams().x,
+            y = window.getLayoutParams().y;
+        e.putInt("layout_x", x);
+        e.putInt("layout_y", y);
+        e.putInt("layout_width", window.getWidth());
+        e.putInt("layout_height", window.getHeight());
+        e.apply();
+        return super.onClose(id, window);
+    }
+
+    @Override
 	public String getPersistentNotificationTitle(int id) {
 		return getAppName();
 	}

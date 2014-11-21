@@ -12,7 +12,7 @@
     <string name="add_item_hint">Добавить</string>
     <string name="settings">Настройки</string>
     <string name="manage_autocomplete">Управление словарем</string>
-    <string name="manage_autocompelte_summary">Добавление, удаление и редактирование словаря продуктов, предназначенного для корректной работы автоматического распознавания из SMS, автодополнения при вводе названий, а также формирования типового списка покупок.</string>
+    <string name="manage_autocompelte_summary">Добавление, удаление и редактирование наименований покупок, предназначенных для корректной работы автоматического распознавания из SMS, автодополнения при вводе названий, а также формирования типового списка покупок.\nСловарь дополняется автоматически при создании основного списка и при получении SMS.</string>
     <string name="delete">Удалить</string>
     <string name="selected">Выбрано:</string>
     <string name="cancel">Отмена</string>
@@ -22,4 +22,8 @@
     <string name="divider_setting">Разделитель списка покупок</string>
     <string name="divider_setting_summary">По умолчанию в качестве разделителя списка покупок из SMS используется \",\". Можно настроить свой разделитель, например \";\" или \"/\".</string>
     <string name="import_from_sms">Импорт из SMS</string>
+    <string name="all_products_in_list">Сформировать типовой список покупок</string>
+    <string name="all_products_in_list_summary">Основной список будет заполнен всеми покупками, добавленными ранее.\nПеречень добавляемых покупок приведен в словаре.</string>
+    <string name="main">Основные</string>
+    <string name="more">Дополнительно</string>
 </resources>

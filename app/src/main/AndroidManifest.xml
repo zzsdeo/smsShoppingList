@@ -3,7 +3,7 @@
     package="ru.zzsdeo.smsshoppinglist" >
 
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
@@ -39,17 +39,15 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
         <activity
             android:name="ru.zzsdeo.smsshoppinglist.ImportFromSmsActivity"
             android:label="@string/import_from_sms" />
 
-        <service
-            android:name="ru.zzsdeo.smsshoppinglist.FloatingWindow" >
+        <service android:name="ru.zzsdeo.smsshoppinglist.FloatingWindow" >
         </service>
-
-        <service
-            android:name=".SmsParser" >
+        <service android:name="ru.zzsdeo.smsshoppinglist.SmsParser" >
+        </service>
+        <service android:name="ru.zzsdeo.smsshoppinglist.RestartIntentService" >
         </service>
 
         <provider
@@ -58,8 +56,7 @@
             android:exported="false" >
         </provider>
 
-        <receiver
-            android:name="ru.zzsdeo.smsshoppinglist.SmsReceiver">
+        <receiver android:name="ru.zzsdeo.smsshoppinglist.SmsReceiver" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

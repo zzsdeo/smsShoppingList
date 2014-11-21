@@ -56,7 +56,7 @@ public class ImportFromSmsActivity extends Activity {
 
         ListView smsList = (ListView) findViewById(R.id.smsList);
         Uri uriSms = Uri.parse("content://sms/inbox");
-        String[] from = new String[]{"_id", "body", "address", "person"};
+        String[] from = new String[]{"_id", "body", "address"};
         c = getContentResolver().query(uriSms, from, null, null, null);
         ImportSmsCursorAdapter adapter = new ImportSmsCursorAdapter(this, c, 0);
         smsList.setAdapter(adapter);
