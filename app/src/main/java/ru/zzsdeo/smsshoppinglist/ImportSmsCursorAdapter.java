@@ -11,9 +11,6 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-/**
- * Created by Andrew on 12.11.2014.
- */
 public class ImportSmsCursorAdapter extends CursorAdapter {
 
     private LayoutInflater mInflater;
@@ -39,8 +36,8 @@ public class ImportSmsCursorAdapter extends CursorAdapter {
         tv1.setText(cursor.getString(cursor.getColumnIndex("address")));
         if (cCursor.moveToFirst()) {
             do {
-                if (cursor.getString(cursor.getColumnIndex("address")).replaceAll("\\D", "")
-                        .equals(cCursor.getString(cCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\D", ""))) {
+                if (cursor.getString(cursor.getColumnIndex("address"))
+                        .contains(cCursor.getString(cCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\D", "").replaceFirst("\\d", ""))) {
                     tv1.setText(cCursor.getString(cCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
                     break;
                 }

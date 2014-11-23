@@ -47,6 +47,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     CursorLoader mCursorLoader;
     Cursor c1, c2, c3;
     SharedPreferences preferences;
+    boolean isLandscape;
 
     @Override
 	public String getAppName() {
@@ -71,6 +72,28 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
         mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_LIST, projection, null, null, ListTable.COLUMN_CHECKED);
         mCursorLoader.registerListener(0, this);
         mCursorLoader.startLoading();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            StandOutLayoutParams params = new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
+                    preferences.getInt("layout_width", 500),
+                    preferences.getInt("layout_height", 500),
+                    preferences.getInt("layout_x", StandOutLayoutParams.AUTO_POSITION),
+                    preferences.getInt("layout_y", StandOutLayoutParams.AUTO_POSITION),
+                    100, 100);
+            updateViewLayout(StandOutWindow.DEFAULT_ID, params);
+        } else {
+            StandOutLayoutParams params = new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
+                    preferences.getInt("layout_width", 500),
+                    preferences.getInt("layout_height", 500),
+                    preferences.getInt("layout_x", StandOutLayoutParams.AUTO_POSITION),
+                    preferences.getInt("layout_y", StandOutLayoutParams.AUTO_POSITION),
+                    100, 100);
+            updateViewLayout(StandOutWindow.DEFAULT_ID, params);
+        }
     }
 
     @Override
@@ -144,9 +167,8 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
         shoppingList.setAdapter(adapter);
 	}
 
-	// every window is initially same size
 	@Override
-	public StandOutLayoutParams getParams(int id, Window window) {
+	public StandOutLayoutParams getParams(int id, Window window) { window.getLayoutParams().screenOrientation
 		return new StandOutLayoutParams(id,
                 preferences.getInt("layout_width", 500),
                 preferences.getInt("layout_height", 500),
@@ -155,25 +177,16 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
                 100, 100);
 	}
 
-	// we want the system window decorations, we want to drag the body, we want
-	// the ability to hide windows, and we want to tap the window to bring to
-	// front
 	@Override
 	public int getFlags(int id) {
 		return StandOutFlags.FLAG_DECORATION_SYSTEM
 				| StandOutFlags.FLAG_BODY_MOVE_ENABLE
 				| StandOutFlags.FLAG_WINDOW_HIDE_ENABLE
-				| StandOutFlags.FLAG_WINDOW_EDGE_LIMITS_ENABLE
+				//| StandOutFlags.FLAG_WINDOW_EDGE_LIMITS_ENABLE
                 | StandOutFlags.FLAG_DECORATION_CLOSE_DISABLE
                 | StandOutFlags.FLAG_WINDOW_FOCUS_INDICATOR_DISABLE
 				| StandOutFlags.FLAG_WINDOW_PINCH_RESIZE_ENABLE;
 	}
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        startService(new Intent(getApplicationContext(), RestartIntentService.class));
-        super.onConfigurationChanged(newConfig);
-    }
 
     @Override
     public boolean onClose(int id, Window window) {

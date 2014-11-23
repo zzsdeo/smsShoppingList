@@ -47,8 +47,6 @@
         </service>
         <service android:name="ru.zzsdeo.smsshoppinglist.SmsParser" >
         </service>
-        <service android:name="ru.zzsdeo.smsshoppinglist.RestartIntentService" >
-        </service>
 
         <provider
             android:name="ru.zzsdeo.smsshoppinglist.ShoppingListContentProvider"
