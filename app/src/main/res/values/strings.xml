@@ -26,4 +26,8 @@
     <string name="all_products_in_list_summary">Основной список будет заполнен всеми покупками, добавленными ранее.\nПеречень добавляемых покупок приведен в словаре.</string>
     <string name="main">Основные</string>
     <string name="more">Дополнительно</string>
+    <string name="sms_parser_settings_title">Автоматическое распознавание SMS</string>
+    <string name="sms_parser_settings_summary">При поступлении SMS со списком покупок будет автоматически запускаться приложение и заполняться полученным списком.</string>
+    <string name="pref_enable_acra">Отправлять отчеты об ошибках</string>
+    <string name="pref_enable_acra_summary">При возникновении ошибок в работе программы будет автоматичеси отправляться АНОНИМНЫЙ отчет с отладочной информацией.</string>
 </resources>

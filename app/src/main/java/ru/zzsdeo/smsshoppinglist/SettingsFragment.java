@@ -1,15 +1,18 @@
 package ru.zzsdeo.smsshoppinglist;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
-/**
- * Created by Andrey on 14.11.2014.
- */
 public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,24 @@ public class SettingsFragment extends PreferenceFragment {
                     } while (c.moveToNext());
                 }
                 getActivity().finish();
+                return true;
+            }
+        });
+
+        CheckBoxPreference smsParser = (CheckBoxPreference) findPreference("sms_parser");
+        smsParser.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                PackageManager pm = getActivity().getPackageManager();
+                ComponentName component = new ComponentName(getActivity(), SmsReceiver.class);
+                SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+                if (!settings.getBoolean("sms_parser", true)) {
+                    pm.setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                }
+                if ((settings.getBoolean("sms_parser", true)) & (pm.getComponentEnabledSetting(component) != PackageManager.COMPONENT_ENABLED_STATE_DEFAULT)) {
+                    pm.setComponentEnabledSetting(component, PackageManager.COMPONENT_ENABLED_STATE_DEFAULT, PackageManager.DONT_KILL_APP);
+                }
                 return true;
             }
         });

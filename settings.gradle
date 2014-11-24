@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':acra-4.5.0'
 include ':standOut'
