@@ -1,12 +1,5 @@
 package ru.zzsdeo.smsshoppinglist;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import wei.mark.standout.StandOutWindow;
-import wei.mark.standout.constants.StandOutFlags;
-import wei.mark.standout.ui.Window;
-
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -15,20 +8,14 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
 import android.widget.FrameLayout;
@@ -40,6 +27,13 @@ import android.widget.PopupWindow;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import wei.mark.standout.StandOutWindow;
+import wei.mark.standout.constants.StandOutFlags;
+import wei.mark.standout.ui.Window;
 
 public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompleteListener<Cursor> {
 

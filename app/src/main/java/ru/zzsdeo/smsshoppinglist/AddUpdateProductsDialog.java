@@ -12,11 +12,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-/**
- * Created by Andrew on 16.11.2014.
- */
 public class AddUpdateProductsDialog extends DialogFragment {
 
     String title;

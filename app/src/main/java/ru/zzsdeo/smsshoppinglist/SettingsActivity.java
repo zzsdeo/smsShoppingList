@@ -4,15 +4,11 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import wei.mark.standout.StandOutWindow;
 
-/**
- * Created by Andrey on 14.11.2014.
- */
 public class SettingsActivity extends Activity {
 
     @Override
@@ -48,7 +44,7 @@ public class SettingsActivity extends Activity {
         Fragment fragment = fm.findFragmentById(R.id.fragmentContainer);
         if (fragment == null) {
             fragment = new SettingsFragment();
-            fm.beginTransaction().add(android.R.id.content, fragment).commit();
+            fm.beginTransaction().replace(android.R.id.content, fragment).commit();
         }
     }
 }

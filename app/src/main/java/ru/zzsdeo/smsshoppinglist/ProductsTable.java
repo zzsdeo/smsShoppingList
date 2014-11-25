@@ -1,11 +1,9 @@
 package ru.zzsdeo.smsshoppinglist;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-/**
- * Created by Andrey on 11.11.2014.
- */
 public class ProductsTable {
     // Database table
     public static final String TABLE_PRODUCTS = "products";
@@ -19,19 +17,9 @@ public class ProductsTable {
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_ITEM + " text not null unique"
             + ");";
-    private static String[] defaultProducts = {
-            "молоко",
-            "хлеб",
-            "булка",
-            "сахар",
-            "мясо",
-            "яйца",
-            "огурцы",
-            "помидоры",
-            "картофель",
-            "сыр"};
 
-    public static void onCreate(SQLiteDatabase database) {
+    public static void onCreate(Context context, SQLiteDatabase database) {
+        String[] defaultProducts = context.getResources().getStringArray(R.array.default_products);
         database.execSQL(DATABASE_CREATE);
         for (String item : defaultProducts) {
             database.execSQL(
@@ -43,12 +31,12 @@ public class ProductsTable {
         }
     }
 
-    public static void onUpgrade(SQLiteDatabase database, int oldVersion,
+    public static void onUpgrade(Context context, SQLiteDatabase database, int oldVersion,
                                  int newVersion) {
         Log.w(ProductsTable.class.getName(), "Upgrading database from version "
                 + oldVersion + " to " + newVersion
                 + ", which will destroy all old data");
         database.execSQL("DROP TABLE IF EXISTS " + TABLE_PRODUCTS);
-        onCreate(database);
+        onCreate(context, database);
     }
 }

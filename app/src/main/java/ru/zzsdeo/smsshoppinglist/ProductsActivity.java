@@ -2,13 +2,11 @@ package ru.zzsdeo.smsshoppinglist;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,16 +18,10 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FilterQueryProvider;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import wei.mark.standout.StandOutWindow;
-
-/**
- * Created by Andrey on 14.11.2014.
- */
 public class ProductsActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private ProductsCursorAdapter adapter;

@@ -1,9 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        zzsdeo2 {
+            keyAlias 'zzsdeo'
+            keyPassword 'crimson'
+            storeFile file('C:/Users/Andrey/Dropbox/Android/Keys/zzsdeo.jks')
+            storePassword 'crimson'
+        }
+    }
     compileSdkVersion 19
     buildToolsVersion "20.0.0"
-
     defaultConfig {
         applicationId "ru.zzsdeo.smsshoppinglist"
         minSdkVersion 15

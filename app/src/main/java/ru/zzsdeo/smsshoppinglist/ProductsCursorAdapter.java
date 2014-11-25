@@ -1,20 +1,13 @@
 package ru.zzsdeo.smsshoppinglist;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
-import android.widget.EditText;
 import android.widget.TextView;
 
-/**
- * Created by Andrew on 12.11.2014.
- */
 public class ProductsCursorAdapter extends CursorAdapter {
 
     private LayoutInflater mInflater;

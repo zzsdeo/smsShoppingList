@@ -1,6 +1,7 @@
 package ru.zzsdeo.smsshoppinglist;
 
 import android.app.Application;
+
 import org.acra.ACRA;
 import org.acra.annotation.ReportsCrashes;
 

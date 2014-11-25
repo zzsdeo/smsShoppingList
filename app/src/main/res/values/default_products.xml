@@ -10,4 +10,42 @@
     <string name="tomato">помидоры</string>
     <string name="potato">картофель</string>
     <string name="cheese">сыр</string>
+    <string name="fish">рыба</string>
+    <string name="sausage">колбаса</string>
+    <string name="chicken">курица</string>
+    <string name="cabbage">капуста</string>
+    <string name="onion">лук</string>
+    <string name="carrot">морковь</string>
+    <string name="garlic">чеснок</string>
+    <string name="bananas">бананы</string>
+    <string name="apples">яблоки</string>
+    <string name="buckwheat">греча</string>
+    <string name="meal">мука</string>
+    <string name="chocolate">шоколад</string>
+
+    <array name="default_products">
+        <item>@string/milk</item>
+        <item>@string/bread</item>
+        <item>@string/butter</item>
+        <item>@string/sugar</item>
+        <item>@string/meat</item>
+        <item>@string/eggs</item>
+        <item>@string/cucumbers</item>
+        <item>@string/tomato</item>
+        <item>@string/potato</item>
+        <item>@string/cheese</item>
+        <item>@string/fish</item>
+        <item>@string/sausage</item>
+        <item>@string/chicken</item>
+        <item>@string/cabbage</item>
+        <item>@string/onion</item>
+        <item>@string/carrot</item>
+        <item>@string/garlic</item>
+        <item>@string/bananas</item>
+        <item>@string/apples</item>
+        <item>@string/buckwheat</item>
+        <item>@string/meal</item>
+        <item>@string/chocolate</item>
+    </array>
+
 </resources>

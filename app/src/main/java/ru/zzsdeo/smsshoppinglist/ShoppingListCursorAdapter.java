@@ -9,12 +9,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-/**
- * Created by Andrew on 12.11.2014.
- */
 public class ShoppingListCursorAdapter extends CursorAdapter {
 
     private LayoutInflater mInflater;

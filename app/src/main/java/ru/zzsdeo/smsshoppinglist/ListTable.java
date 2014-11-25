@@ -3,9 +3,6 @@ package ru.zzsdeo.smsshoppinglist;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-/**
- * Created by Andrey on 11.11.2014.
- */
 public class ListTable {
     // Database table
     public static final String TABLE_LIST = "list";

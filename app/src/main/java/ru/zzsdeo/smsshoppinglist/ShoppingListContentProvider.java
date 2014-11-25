@@ -13,9 +13,6 @@ import android.text.TextUtils;
 import java.util.Arrays;
 import java.util.HashSet;
 
-/**
- * Created by Andrey on 11.11.2014.
- */
 public class ShoppingListContentProvider extends ContentProvider {
     // database
     private ListDatabaseHelper database;

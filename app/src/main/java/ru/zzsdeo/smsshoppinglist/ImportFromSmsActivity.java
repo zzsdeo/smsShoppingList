@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,9 +13,6 @@ import android.widget.ListView;
 
 import wei.mark.standout.StandOutWindow;
 
-/**
- * Created by Andrew on 19.11.2014.
- */
 public class ImportFromSmsActivity extends Activity {
 
     Cursor c;

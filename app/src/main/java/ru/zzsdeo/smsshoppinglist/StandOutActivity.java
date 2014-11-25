@@ -1,8 +1,9 @@
 package ru.zzsdeo.smsshoppinglist;
 
-import wei.mark.standout.StandOutWindow;
 import android.app.Activity;
 import android.os.Bundle;
+
+import wei.mark.standout.StandOutWindow;
 
 public class StandOutActivity extends Activity {
 	/** Called when the activity is first created. */

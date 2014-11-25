@@ -9,9 +9,6 @@ import android.preference.PreferenceManager;
 
 import wei.mark.standout.StandOutWindow;
 
-/**
- * Created by Andrew on 16.11.2014.
- */
 public class SmsParser extends IntentService {
 
     public SmsParser() {
@@ -44,7 +41,7 @@ public class SmsParser extends IntentService {
         for (String s : parsedSms) {
             if (c.moveToFirst()) {
                 do {
-                    if (c.getString(c.getColumnIndex(ProductsTable.COLUMN_ITEM)).equals(s.trim().toLowerCase())) {
+                    if (s.trim().toLowerCase().contains(c.getString(c.getColumnIndex(ProductsTable.COLUMN_ITEM)))) {
                         isList = true;
                         break;
                     }
