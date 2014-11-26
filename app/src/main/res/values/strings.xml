@@ -30,4 +30,5 @@
     <string name="sms_parser_settings_summary">При поступлении SMS со списком покупок будет автоматически запускаться приложение и заполняться полученным списком.</string>
     <string name="pref_enable_acra">Отправлять отчеты об ошибках</string>
     <string name="pref_enable_acra_summary">При возникновении ошибок в работе программы будет автоматичеси отправляться АНОНИМНЫЙ отчет с отладочной информацией.</string>
+    <string name="added">"Добавлено: "</string>
 </resources>
