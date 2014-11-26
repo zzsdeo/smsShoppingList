@@ -2,6 +2,7 @@ package ru.zzsdeo.smsshoppinglist;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,24 +27,19 @@ public class ImportSmsCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        Cursor cCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                new String[]{ContactsContract.CommonDataKinds.Phone._ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER},
-                null, null, null);
+        String address = cursor.getString(cursor.getColumnIndex("address"));
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(address));
+        Cursor mCursor = context.getContentResolver().query(lookupUri, new String[] {ContactsContract.Data.DISPLAY_NAME}, null, null, null);
 
         TextView tv1 = (TextView) view.findViewById(R.id.smsAddressItem);
-        tv1.setText(cursor.getString(cursor.getColumnIndex("address")));
-        if (cCursor.moveToFirst()) {
-            do {
-                if (cursor.getString(cursor.getColumnIndex("address"))
-                        .contains(cCursor.getString(cCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replaceAll("\\D", "").replaceFirst("\\d", ""))) {
-                    tv1.setText(cCursor.getString(cCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
-                    break;
-                }
-            } while (cCursor.moveToNext());
+        if (mCursor.moveToFirst()) {
+            tv1.setText(mCursor.getString(0));
+        } else {
+            tv1.setText(address);
         }
+        mCursor.close();
+
         TextView tv2 = (TextView) view.findViewById(R.id.smsBodyItem);
         tv2.setText(cursor.getString(cursor.getColumnIndex("body")));
-
-        cCursor.close();
     }
 }

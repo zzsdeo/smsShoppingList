@@ -26,8 +26,8 @@ public class SmsParser extends IntentService {
         if (action.equals("check_and_insert")) {
             if (checkSms(parsedSms)) {
                 insertSmsInDb(parsedSms);
+                StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
             }
-            StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
         }
 
         if (action.equals("insert")) {
