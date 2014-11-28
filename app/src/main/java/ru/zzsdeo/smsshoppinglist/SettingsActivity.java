@@ -12,8 +12,8 @@ import wei.mark.standout.StandOutWindow;
 public class SettingsActivity extends Activity {
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onBackPressed() {
+        super.onBackPressed();
         StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
     }
 
@@ -21,6 +21,7 @@ public class SettingsActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
                 finish();
                 return true;
             default:

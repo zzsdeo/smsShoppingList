@@ -7,6 +7,12 @@
         android:actionViewClass="android.widget.SearchView" />
 
     <item
+        android:id="@+id/sort_item"
+        android:showAsAction="always"
+        android:title="@string/sort"
+        android:icon="@android:drawable/ic_menu_sort_alphabetically"/>
+
+    <item
         android:id="@+id/add_item"
         android:showAsAction="always"
         android:title="@string/add_item_hint"

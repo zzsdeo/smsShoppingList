@@ -8,6 +8,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
@@ -26,6 +27,7 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
 
     private ProductsCursorAdapter adapter;
     Cursor c;
+    SharedPreferences preferences;
 
     @Override
     protected void onDestroy() {
@@ -53,7 +55,6 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
             public boolean onQueryTextChange(String query) {
                 adapter.getFilter().filter(query.toLowerCase());
                 return true;
-
             }
 
         });
@@ -65,6 +66,16 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                return true;
+            case R.id.sort_item:
+                SharedPreferences.Editor e = preferences.edit();
+                if (preferences.getString("products_sort", ProductsTable.COLUMN_ID).equals(ProductsTable.COLUMN_ID)) {
+                    e.putString("products_sort", ProductsTable.COLUMN_ITEM);
+                } else {
+                    e.putString("products_sort", ProductsTable.COLUMN_ID);
+                }
+                e.apply();
+                getLoaderManager().restartLoader(0, null, this);
                 return true;
             case R.id.add_item:
                 DialogFragment df = new AddUpdateProductsDialog();
@@ -82,6 +93,8 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_products);
+
+        preferences = getSharedPreferences("sort_prefs", MODE_PRIVATE);
 
         getLoaderManager().initLoader(0, null, this);
 
@@ -164,7 +177,7 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, null);
+        return new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, preferences.getString("products_sort", ProductsTable.COLUMN_ID));
     }
 
     @Override

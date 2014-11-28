@@ -10,10 +10,13 @@ import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AutoCompleteTextView;
@@ -185,17 +188,31 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 				| StandOutFlags.FLAG_BODY_MOVE_ENABLE
 				| StandOutFlags.FLAG_WINDOW_HIDE_ENABLE
                 | StandOutFlags.FLAG_DECORATION_CLOSE_DISABLE
-                | StandOutFlags.FLAG_WINDOW_FOCUS_INDICATOR_DISABLE
-				| StandOutFlags.FLAG_WINDOW_PINCH_RESIZE_ENABLE;
+                | StandOutFlags.FLAG_WINDOW_FOCUS_INDICATOR_DISABLE;
 	}
 
     @Override
     public void onMove(int id, Window window, View view, MotionEvent event) {
         super.onMove(id, window, view, event);
+        Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        int widthPixels = metrics.widthPixels,
+            heightPixels = metrics.heightPixels;
+        int x = window.getLayoutParams().x,
+            y = window.getLayoutParams().y;
         SharedPreferences.Editor e = preferences.edit();
+        if (y < 0) {
+            window.edit().setPosition(x, 0).commit();
+        } else if (y > heightPixels - getNavigationBarHeight(getResources().getConfiguration().orientation)) {
+            window.edit().setPosition(x, heightPixels - getNavigationBarHeight(getResources().getConfiguration().orientation)).commit();
+        }
+        if (x < getNavigationBarHeight(getResources().getConfiguration().orientation) - window.getWidth()) {
+            window.edit().setPosition(getNavigationBarHeight(getResources().getConfiguration().orientation) - window.getWidth(), y).commit();
+        } else if (x > widthPixels - getNavigationBarHeight(getResources().getConfiguration().orientation)) {
+            window.edit().setPosition(widthPixels - getNavigationBarHeight(getResources().getConfiguration().orientation), y).commit();
+        }
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            int x = window.getLayoutParams().x,
-                y = window.getLayoutParams().y;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 e.putInt("layout_land_x", x);
                 e.putInt("layout_land_y", y);
@@ -415,5 +432,14 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
     public void onLoadComplete(Loader<Cursor> cursorLoader, Cursor cursor) {
         adapter.swapCursor(cursor);
+    }
+
+    private int getNavigationBarHeight(int orientation) {
+        int result = 0;
+        int resourceId = getResources().getIdentifier(orientation == Configuration.ORIENTATION_PORTRAIT ? "navigation_bar_height" : "navigation_bar_height_landscape", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
     }
 }

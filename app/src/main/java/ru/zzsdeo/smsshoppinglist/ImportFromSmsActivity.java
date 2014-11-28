@@ -20,16 +20,22 @@ public class ImportFromSmsActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
         if (c != null) {
             c.close();
         }
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
                 finish();
                 return true;
             default:

@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import wei.mark.standout.StandOutWindow;
+
 public class AllProductsInListAsyncTask extends AsyncTask<Void, Integer, Void> {
 
     private ProgressDialog progressBar;
@@ -37,6 +39,7 @@ public class AllProductsInListAsyncTask extends AsyncTask<Void, Integer, Void> {
         int sum = i - 1;
         Toast.makeText(context, context.getString(R.string.added) + sum, Toast.LENGTH_LONG).show();
         ((Activity)context).finish();
+        StandOutWindow.show(context, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
     }
 
     @Override
