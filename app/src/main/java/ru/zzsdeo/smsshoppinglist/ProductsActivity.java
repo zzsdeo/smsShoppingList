@@ -58,6 +58,12 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
             }
 
         });
+
+        if (preferences.getString("products_sort", ProductsTable.COLUMN_ID + " DESC").equals(ProductsTable.COLUMN_ID + " DESC")) {
+            menu.findItem(R.id.sort_item).setIcon(android.R.drawable.ic_menu_sort_alphabetically);
+        } else {
+            menu.findItem(R.id.sort_item).setIcon(android.R.drawable.ic_menu_sort_by_size);
+        }
         return true;
     }
 
@@ -69,10 +75,12 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
                 return true;
             case R.id.sort_item:
                 SharedPreferences.Editor e = preferences.edit();
-                if (preferences.getString("products_sort", ProductsTable.COLUMN_ID).equals(ProductsTable.COLUMN_ID)) {
+                if (preferences.getString("products_sort", ProductsTable.COLUMN_ID + " DESC").equals(ProductsTable.COLUMN_ID + " DESC")) {
                     e.putString("products_sort", ProductsTable.COLUMN_ITEM);
+                    item.setIcon(android.R.drawable.ic_menu_sort_by_size);
                 } else {
-                    e.putString("products_sort", ProductsTable.COLUMN_ID);
+                    e.putString("products_sort", ProductsTable.COLUMN_ID + " DESC");
+                    item.setIcon(android.R.drawable.ic_menu_sort_alphabetically);
                 }
                 e.apply();
                 getLoaderManager().restartLoader(0, null, this);
@@ -109,7 +117,7 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
         adapter.setFilterQueryProvider(new FilterQueryProvider() {
             @Override
             public Cursor runQuery(CharSequence charSequence) {
-                c = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + charSequence.toString().toLowerCase() + "%" + '"', null, null);
+                c = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, ProductsTable.COLUMN_ITEM + " like " + '"' + "%" + charSequence.toString().toLowerCase() + "%" + '"', null, preferences.getString("products_sort", ProductsTable.COLUMN_ID + " DESC"));
                 return c;
             }
         });
@@ -177,7 +185,7 @@ public class ProductsActivity extends Activity implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, preferences.getString("products_sort", ProductsTable.COLUMN_ID));
+        return new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, preferences.getString("products_sort", ProductsTable.COLUMN_ID + " DESC"));
     }
 
     @Override
