@@ -7,8 +7,7 @@
             android:key="sms_parser"
             android:title="@string/sms_parser_settings_title"
             android:summary="@string/sms_parser_settings_summary"
-            android:defaultValue="true">
-        </CheckBoxPreference>
+            android:defaultValue="true"/>
         <EditTextPreference
             android:key="divider_setting"
             android:title="@string/divider_setting"
@@ -20,6 +19,19 @@
             android:summary="@string/pref_enable_acra_summary"
             android:defaultValue="true"/>
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Внешний вид">
+        <CheckBoxPreference
+            android:key="list_sort_alphabetical"
+            android:title="Сортировать список по алфавиту"
+            android:summary="По умолчанию сортировка списка осуществляется по порядку добавления."
+            android:defaultValue="false"/>
+        <Preference
+            android:key="color_picker"
+            android:title="Цвет фона"
+            android:summary="Цвет фона" />
+     </PreferenceCategory>
 
     <PreferenceCategory
         android:title="@string/more">

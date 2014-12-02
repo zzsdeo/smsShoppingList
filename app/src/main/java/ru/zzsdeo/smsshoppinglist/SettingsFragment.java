@@ -4,13 +4,17 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragment implements ColorPickerDialog.OnColorChangedListener {
+
+    private Paint mPaint;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,5 +56,19 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+        Preference colorPicker = findPreference("color_picker");
+        colorPicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                mPaint = new Paint();
+                new ColorPickerDialog(getActivity(), SettingsFragment.this, mPaint.getColor()).show();
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public void colorChanged(int color) {
+
     }
 }
