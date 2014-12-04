@@ -1,5 +1,6 @@
 package ru.zzsdeo.smsshoppinglist;
 
+import android.app.DialogFragment;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,9 +12,9 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
-public class SettingsFragment extends PreferenceFragment implements ColorPickerDialog.OnColorChangedListener {
+import wei.mark.standout.StandOutWindow;
 
-    private Paint mPaint;
+public class SettingsFragment extends PreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,15 +61,18 @@ public class SettingsFragment extends PreferenceFragment implements ColorPickerD
         colorPicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                mPaint = new Paint();
-                new ColorPickerDialog(getActivity(), SettingsFragment.this, mPaint.getColor()).show();
+
                 return true;
             }
         });
-    }
-
-    @Override
-    public void colorChanged(int color) {
-
+        Preference fontSize = findPreference("font_size");
+        fontSize.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                DialogFragment df = new SeekBarDialog();
+                df.show(getFragmentManager(), "seekBarDialog");
+                return true;
+            }
+        });
     }
 }

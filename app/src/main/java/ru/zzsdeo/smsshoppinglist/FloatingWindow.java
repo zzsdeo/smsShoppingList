@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -43,7 +44,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     private ShoppingListCursorAdapter adapter;
     CursorLoader mCursorLoader;
     Cursor c1, c2, c3;
-    SharedPreferences preferences;
+    SharedPreferences layoutPreferences, sortPreferences;
 
     @Override
 	public String getAppName() {
@@ -63,9 +64,10 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
     public void onCreate() {
         super.onCreate();
-        preferences = getSharedPreferences("layout_prefs", MODE_PRIVATE);
+        layoutPreferences = getSharedPreferences("layout_prefs", MODE_PRIVATE);
+        sortPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String[] projection = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
-        mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_LIST, projection, null, null, ListTable.COLUMN_CHECKED);
+        mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_LIST, projection, null, null, null);
         mCursorLoader.registerListener(0, this);
         mCursorLoader.startLoading();
     }
@@ -76,17 +78,17 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
         if (getWindow(StandOutWindow.DEFAULT_ID) != null) {
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 updateViewLayout(StandOutWindow.DEFAULT_ID, new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
-                        preferences.getInt("layout_land_width", 500),
-                        preferences.getInt("layout_land_height", 500),
-                        preferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
-                        preferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION),
+                        layoutPreferences.getInt("layout_land_width", 500),
+                        layoutPreferences.getInt("layout_land_height", 500),
+                        layoutPreferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
+                        layoutPreferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION),
                         100, 100));
             } else {
                 updateViewLayout(StandOutWindow.DEFAULT_ID, new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
-                        preferences.getInt("layout_port_width", 500),
-                        preferences.getInt("layout_port_height", 500),
-                        preferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
-                        preferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION),
+                        layoutPreferences.getInt("layout_port_width", 500),
+                        layoutPreferences.getInt("layout_port_height", 500),
+                        layoutPreferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
+                        layoutPreferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION),
                         100, 100));
             }
         }
@@ -158,26 +160,32 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             }
         });
 
+        if (sortPreferences.getBoolean("list_sort_alphabetical", false)) {
+            mCursorLoader.setSortOrder(ListTable.COLUMN_CHECKED + ", " + ListTable.COLUMN_ITEM);
+        } else {
+            mCursorLoader.setSortOrder(ListTable.COLUMN_CHECKED + ", " + ListTable.COLUMN_ID + " DESC");
+        }
+
         mCursorLoader.forceLoad();
         adapter = new ShoppingListCursorAdapter(this, null, 0);
         shoppingList.setAdapter(adapter);
 	}
 
-	@Override
+    @Override
 	public StandOutLayoutParams getParams(int id, Window window) {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             return new StandOutLayoutParams(id,
-                    preferences.getInt("layout_land_width", 500),
-                    preferences.getInt("layout_land_height", 500),
-                    preferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
-                    preferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_land_width", 500),
+                    layoutPreferences.getInt("layout_land_height", 500),
+                    layoutPreferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION),
                     100, 100);
         } else {
             return new StandOutLayoutParams(id,
-                    preferences.getInt("layout_port_width", 500),
-                    preferences.getInt("layout_port_height", 500),
-                    preferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
-                    preferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_port_width", 500),
+                    layoutPreferences.getInt("layout_port_height", 500),
+                    layoutPreferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION),
                     100, 100);
         }
 	}
@@ -201,7 +209,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             heightPixels = metrics.heightPixels;
         int x = window.getLayoutParams().x,
             y = window.getLayoutParams().y;
-        SharedPreferences.Editor e = preferences.edit();
+        SharedPreferences.Editor e = layoutPreferences.edit();
         if (y < 0) {
             window.edit().setPosition(x, 0).commit();
         } else if (y > heightPixels - getNavigationBarHeight(getResources().getConfiguration().orientation)) {
@@ -227,7 +235,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
     public void onResize(int id, Window window, View view, MotionEvent event) {
         super.onResize(id, window, view, event);
-        SharedPreferences.Editor e = preferences.edit();
+        SharedPreferences.Editor e = layoutPreferences.edit();
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 e.putInt("layout_land_width", window.getWidth());

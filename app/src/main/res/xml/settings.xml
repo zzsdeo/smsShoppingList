@@ -21,16 +21,20 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Внешний вид">
+        android:title="@string/view_settings">
         <CheckBoxPreference
             android:key="list_sort_alphabetical"
-            android:title="Сортировать список по алфавиту"
-            android:summary="По умолчанию сортировка списка осуществляется по порядку добавления."
+            android:title="@string/list_sort_alphabetical"
+            android:summary="@string/list_sort_alphabetical_summary"
             android:defaultValue="false"/>
         <Preference
+            android:key="font_size"
+            android:title="@string/font_size"
+            android:summary="@string/font_size_summary" />
+        <Preference
             android:key="color_picker"
-            android:title="Цвет фона"
-            android:summary="Цвет фона" />
+            android:title="@string/background_color"
+            android:summary="@string/color_picker_summary"/>
      </PreferenceCategory>
 
     <PreferenceCategory

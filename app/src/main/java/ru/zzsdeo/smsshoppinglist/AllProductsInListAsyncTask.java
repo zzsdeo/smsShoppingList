@@ -30,14 +30,14 @@ public class AllProductsInListAsyncTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onProgressUpdate(Integer... option) {
-        progressBar.setMessage(context.getString(R.string.added) + option[0]);
+        progressBar.setMessage(context.getString(R.string.added) + " " + option[0]);
     }
 
     @Override
     protected void onPostExecute(Void unused) {
         progressBar.dismiss();
         int sum = i - 1;
-        Toast.makeText(context, context.getString(R.string.added) + sum, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.added) + " " + sum, Toast.LENGTH_LONG).show();
         ((Activity)context).finish();
         StandOutWindow.show(context, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
     }
