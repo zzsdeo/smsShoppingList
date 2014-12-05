@@ -58,13 +58,15 @@ public class SmsParser extends IntentService {
     private void insertSmsInDb (String[] parsedSms) {
         ContentValues values = new ContentValues();
         for (String s : parsedSms) {
-            values.put(ListTable.COLUMN_ITEM, s.trim().toLowerCase());
-            values.put(ListTable.COLUMN_CHECKED, 0);
-            getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_LIST, values);
-            values.clear();
-            values.put(ProductsTable.COLUMN_ITEM, s.trim().toLowerCase());
-            getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, values);
-            values.clear();
+            if (s.trim().length() > 0) {
+                values.put(ListTable.COLUMN_ITEM, s.trim().toLowerCase());
+                values.put(ListTable.COLUMN_CHECKED, 0);
+                getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_LIST, values);
+                values.clear();
+                values.put(ProductsTable.COLUMN_ITEM, s.trim().toLowerCase());
+                getContentResolver().insert(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, values);
+                values.clear();
+            }
         }
     }
 }

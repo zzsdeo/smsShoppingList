@@ -31,10 +31,24 @@
             android:key="font_size"
             android:title="@string/font_size"
             android:summary="@string/font_size_summary" />
-        <Preference
-            android:key="color_picker"
+        <ru.zzsdeo.smsshoppinglist.ColorPickerPreference
+            android:id="@+id/colorPickerText"
+            android:key="font_color"
+            android:title="@string/font_color"
+            android:summary="@string/font_color_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <ru.zzsdeo.smsshoppinglist.ColorPickerPreference
+            android:id="@+id/colorPickerBackground"
+            android:key="background_color"
             android:title="@string/background_color"
-            android:summary="@string/color_picker_summary"/>
+            android:summary="@string/color_picker_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Preference
+            android:key="background_transparency"
+            android:title="@string/background_transparency"
+            android:summary="@string/background_transparency_summary" />
      </PreferenceCategory>
 
     <PreferenceCategory

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.style.StrikethroughSpan;
 import android.view.LayoutInflater;
@@ -16,12 +17,13 @@ import android.widget.TextView;
 public class ShoppingListCursorAdapter extends CursorAdapter {
 
     private LayoutInflater mInflater;
-    SharedPreferences preferences;
+    SharedPreferences preferences, mainPreferences;
 
     public ShoppingListCursorAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         preferences = context.getSharedPreferences("font_prefs", Context.MODE_PRIVATE);
+        mainPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
@@ -35,6 +37,8 @@ public class ShoppingListCursorAdapter extends CursorAdapter {
         final CheckBox cb = (CheckBox) view.findViewById(R.id.checkBoxItem);
 
         tv.setTextSize(preferences.getInt("font_size", 18));
+        tv.setTextColor(mainPreferences.getInt("font_color", -1));
+
         if (cursor.getInt(cursor.getColumnIndex(ListTable.COLUMN_CHECKED)) == 1) {
             cb.setChecked(true);
             SpannableStringBuilder sp = new SpannableStringBuilder(cursor.getString(cursor.getColumnIndex(ListTable.COLUMN_ITEM)));

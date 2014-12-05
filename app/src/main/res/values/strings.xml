@@ -40,4 +40,8 @@
     <string name="view_settings">Внешний вид</string>
     <string name="font_size_summary">Размер шрифта в списке покупок.\nЗначение по умолчанию - 18</string>
     <string name="color_picker_summary">Цвет фона списка покупок.</string>
+    <string name="font_color">Цвет шрифта</string>
+    <string name="font_color_summary">Цвет шрифта в списке покупок.</string>
+    <string name="background_transparency">Прозрачность фона</string>
+    <string name="background_transparency_summary">Прозрачность фона списка покупок.\nЗначение по умолчанию - 90%</string>
 </resources>

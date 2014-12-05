@@ -11,27 +11,25 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class SeekBarDialog extends DialogFragment {
+public class SeekBarTransparencyDialog extends DialogFragment {
 
     SharedPreferences preferences;
-    int progress;
-    private final static int MAX_SIZE = 50;
-    private final static int MIN_SIZE = 10;
+    float progress;
+    private final static int K = 100;
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        preferences = getActivity().getSharedPreferences("font_prefs", Context.MODE_PRIVATE);
-        LinearLayout view = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.seekbar_dialog, null);
-        SeekBar sb = (SeekBar) view.findViewById(R.id.seekBar);
-        final TextView tv = (TextView) view.findViewById(R.id.fontSizeTextView);
-        sb.setMax(MAX_SIZE - MIN_SIZE);
-        progress = preferences.getInt("font_size", 18);
-        sb.setProgress(progress - MIN_SIZE);
-        tv.setText(String.valueOf(progress));
+        preferences = getActivity().getSharedPreferences("layout_prefs", Context.MODE_PRIVATE);
+        LinearLayout view = (LinearLayout) getActivity().getLayoutInflater().inflate(R.layout.seekbar_transparency_dialog, null);
+        SeekBar sb = (SeekBar) view.findViewById(R.id.transparencySeekBar);
+        final TextView tv = (TextView) view.findViewById(R.id.transparencyTextView);
+        progress = preferences.getFloat("transparency", 0.9f);
+        sb.setProgress((int) (progress*K));
+        tv.setText(String.valueOf((int) (progress*K)) + "%");
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                progress = i + MIN_SIZE;
-                tv.setText(String.valueOf(progress));
+                progress = (float) i / K;
+                tv.setText(String.valueOf(i) + "%");
             }
 
             @Override
@@ -45,12 +43,12 @@ public class SeekBarDialog extends DialogFragment {
             }
         });
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivity())
-                .setTitle(getString(R.string.font_size))
+                .setTitle(getString(R.string.background_transparency))
                 .setView(view)
                 .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        preferences.edit().putInt("font_size", progress).apply();
+                        preferences.edit().putFloat("transparency", progress).apply();
                         dialogInterface.dismiss();
                     }
                 })

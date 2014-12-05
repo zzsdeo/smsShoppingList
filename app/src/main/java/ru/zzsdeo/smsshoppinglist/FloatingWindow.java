@@ -44,7 +44,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     private ShoppingListCursorAdapter adapter;
     CursorLoader mCursorLoader;
     Cursor c1, c2, c3;
-    SharedPreferences layoutPreferences, sortPreferences;
+    SharedPreferences layoutPreferences, mainPreferences;
 
     @Override
 	public String getAppName() {
@@ -65,7 +65,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     public void onCreate() {
         super.onCreate();
         layoutPreferences = getSharedPreferences("layout_prefs", MODE_PRIVATE);
-        sortPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mainPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String[] projection = { ListTable.COLUMN_ID, ListTable.COLUMN_ITEM, ListTable.COLUMN_CHECKED };
         mCursorLoader = new CursorLoader(this, ShoppingListContentProvider.CONTENT_URI_LIST, projection, null, null, null);
         mCursorLoader.registerListener(0, this);
@@ -100,9 +100,15 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.body, frame, true);
 
+        LinearLayout background = (LinearLayout) view.findViewById(R.id.background);
+        background.setBackgroundColor(mainPreferences.getInt("background_color", -16777216));
+        background.setAlpha(layoutPreferences.getFloat("transparency", 0.9f));
+
         final AutoCompleteTextView addItemInputText = (AutoCompleteTextView) view.findViewById(R.id.addItemInputText);
         final ImageButton addItemBtn = (ImageButton) view.findViewById(R.id.addItemBtn);
         final ListView shoppingList = (ListView) view.findViewById(R.id.shoppingList);
+
+        addItemInputText.setTextColor(mainPreferences.getInt("font_color", -1));
 
         c1 = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, new String[] {ProductsTable.COLUMN_ITEM, ProductsTable.COLUMN_ID}, null, null, null);
         c2 = getContentResolver().query(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, null, null, null, null);
@@ -160,7 +166,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             }
         });
 
-        if (sortPreferences.getBoolean("list_sort_alphabetical", false)) {
+        if (mainPreferences.getBoolean("list_sort_alphabetical", false)) {
             mCursorLoader.setSortOrder(ListTable.COLUMN_CHECKED + ", " + ListTable.COLUMN_ITEM);
         } else {
             mCursorLoader.setSortOrder(ListTable.COLUMN_CHECKED + ", " + ListTable.COLUMN_ID + " DESC");
@@ -197,7 +203,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 				| StandOutFlags.FLAG_WINDOW_HIDE_ENABLE
                 | StandOutFlags.FLAG_DECORATION_CLOSE_DISABLE
                 | StandOutFlags.FLAG_WINDOW_FOCUS_INDICATOR_DISABLE;
-	}
+    }
 
     @Override
     public void onMove(int id, Window window, View view, MotionEvent event) {

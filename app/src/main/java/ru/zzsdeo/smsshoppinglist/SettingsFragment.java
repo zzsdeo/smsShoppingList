@@ -5,14 +5,11 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-
-import wei.mark.standout.StandOutWindow;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -57,11 +54,12 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
-        Preference colorPicker = findPreference("color_picker");
-        colorPicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        Preference backgroundTransparency = findPreference("background_transparency");
+        backgroundTransparency.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-
+                DialogFragment df = new SeekBarTransparencyDialog();
+                df.show(getFragmentManager(), "seekBarTransparencyDialog");
                 return true;
             }
         });
