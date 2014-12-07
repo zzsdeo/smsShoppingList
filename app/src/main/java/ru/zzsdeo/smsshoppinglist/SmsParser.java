@@ -32,6 +32,7 @@ public class SmsParser extends IntentService {
 
         if (action.equals("insert")) {
             insertSmsInDb(parsedSms);
+            StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
         }
     }
 
