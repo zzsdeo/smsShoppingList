@@ -53,7 +53,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
 	@Override
 	public int getAppIcon() {
-        return R.drawable.ic_launcher;
+        return R.drawable.ic_stat_notification_event_available;
 	}
 
 	@Override

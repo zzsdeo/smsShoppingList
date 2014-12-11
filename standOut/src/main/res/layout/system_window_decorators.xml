@@ -44,7 +44,7 @@
             android:id="@+id/maximize"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:background="@android:drawable/ic_menu_view"
+            android:background="@drawable/ic_action_action_settings_overscan"
             android:contentDescription="@string/maximize" />
 
         <ImageView

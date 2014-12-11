@@ -17,15 +17,15 @@ public class SmsReceiver extends BroadcastReceiver {
         Object[] messages = (Object[]) bundle.get("pdus");
         SmsMessage[] sms = new SmsMessage[messages.length];
 
+        StringBuilder sb = new StringBuilder();
         for (int n = 0; n < messages.length; n++) {
             sms[n] = SmsMessage.createFromPdu((byte[]) messages[n]);
+            sb.append(sms[n].getMessageBody());
         }
 
-        for (SmsMessage msg : sms) {
-            Bundle smsBundle = new Bundle();
-            smsBundle.putString("SMS", msg.getMessageBody());
-            smsBundle.putString("action", "check_and_insert");
-            context.startService(new Intent(context, SmsParser.class).putExtras(smsBundle));
-        }
+        Bundle smsBundle = new Bundle();
+        smsBundle.putString("SMS", sb.toString());
+        smsBundle.putString("action", "check_and_insert");
+        context.startService(new Intent(context, SmsParser.class).putExtras(smsBundle));
     }
 }

@@ -16,7 +16,8 @@ public final class R {
         public static int close=0x7f020002;
         public static int corner=0x7f020003;
         public static int hide=0x7f020004;
-        public static int maximize=0x7f020005;
+        public static int ic_action_action_settings_overscan=0x7f020005;
+        public static int maximize=0x7f020006;
     }
     public static final class id {
         public static int body=0x7f050009;
