@@ -383,7 +383,7 @@ public class Window extends FrameLayout {
 				.findViewById(R.id.window_icon);
         //TODO вернуть все как было
         //icon.setImageResource(mContext.getAppIcon());
-		icon.setImageResource(android.R.drawable.ic_menu_more);
+		icon.setImageResource(R.drawable.ic_action_navigation_menu);
 		icon.setOnClickListener(new OnClickListener() {
 
 			@Override

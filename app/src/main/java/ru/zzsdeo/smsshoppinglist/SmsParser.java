@@ -27,6 +27,9 @@ public class SmsParser extends IntentService {
             if (checkSms(parsedSms)) {
                 insertSmsInDb(parsedSms);
                 StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+                if (settings.getBoolean("minimize_autostart", false)) {
+                    StandOutWindow.hide(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+                }
             }
         }
 

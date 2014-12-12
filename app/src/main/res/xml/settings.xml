@@ -8,6 +8,12 @@
             android:title="@string/sms_parser_settings_title"
             android:summary="@string/sms_parser_settings_summary"
             android:defaultValue="true"/>
+        <CheckBoxPreference
+            android:key="minimize_autostart"
+            android:title="@string/minimize_autostart_title"
+            android:summary="@string/minimize_autostart_summary"
+            android:dependency="sms_parser"
+            android:defaultValue="false"/>
         <EditTextPreference
             android:key="divider_setting"
             android:title="@string/divider_setting"

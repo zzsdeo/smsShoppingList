@@ -280,7 +280,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
     @Override
 	public int getHiddenIcon() {
-		return android.R.drawable.ic_menu_upload;
+		return R.drawable.ic_stat_navigation_expand_more;
 	}
 
 	@Override
