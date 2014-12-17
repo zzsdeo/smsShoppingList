@@ -381,9 +381,10 @@ public class Window extends FrameLayout {
 		// icon
 		final ImageView icon = (ImageView) decorations
 				.findViewById(R.id.window_icon);
-        //TODO вернуть все как было
+        //TODO < мои изменения
         //icon.setImageResource(mContext.getAppIcon());
 		icon.setImageResource(R.drawable.ic_action_navigation_menu);
+        //TODO мои изменения >
 		icon.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -433,6 +434,9 @@ public class Window extends FrameLayout {
 							.getInt(WindowDataKeys.Y_BEFORE_MAXIMIZE, -1);
 					edit().setSize(oldWidth, oldHeight).setPosition(oldX, oldY)
 							.commit();
+                    //TODO < мои изменения
+                    v.setBackgroundResource(R.drawable.ic_action_action_settings_overscan);
+                    //TODO мои изменения >
 				} else {
 					data.putBoolean(WindowDataKeys.IS_MAXIMIZED, true);
 					data.putInt(WindowDataKeys.WIDTH_BEFORE_MAXIMIZE,
@@ -442,6 +446,9 @@ public class Window extends FrameLayout {
 					data.putInt(WindowDataKeys.X_BEFORE_MAXIMIZE, params.x);
 					data.putInt(WindowDataKeys.Y_BEFORE_MAXIMIZE, params.y);
 					edit().setSize(1f, 1f).setPosition(0, 0).commit();
+                    //TODO < мои изменения
+                    v.setBackgroundResource(R.drawable.ic_action_action_settings_overscan2);
+                    //TODO мои изменения >
 				}
 			}
 		});
@@ -502,6 +509,11 @@ public class Window extends FrameLayout {
 
 		return decorations;
 	}
+
+    public void updateMaximizeBtnBackground () {
+        View maximize = getSystemDecorations().findViewById(R.id.maximize);
+        maximize.setBackgroundResource(R.drawable.ic_action_action_settings_overscan);
+    }
 
 	/**
 	 * Implement StandOut specific additional functionalities.

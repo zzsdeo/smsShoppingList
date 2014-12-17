@@ -76,6 +76,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (getWindow(StandOutWindow.DEFAULT_ID) != null) {
+            getWindow(StandOutWindow.DEFAULT_ID).updateMaximizeBtnBackground();
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 updateViewLayout(StandOutWindow.DEFAULT_ID, new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
                         layoutPreferences.getInt("layout_land_width", 500),
