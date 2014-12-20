@@ -417,6 +417,12 @@ public class Window extends FrameLayout {
 
 			@Override
 			public void onClick(View v) {
+                //TODO < мои изменения
+                DisplayMetrics metrics = mContext.getResources()
+                        .getDisplayMetrics();
+                displayWidth = metrics.widthPixels;
+                displayHeight = (int) (metrics.heightPixels - 25 * metrics.density);
+                //TODO мои изменения >
 				StandOutLayoutParams params = getLayoutParams();
 				boolean isMaximized = data
 						.getBoolean(WindowDataKeys.IS_MAXIMIZED);
@@ -510,9 +516,8 @@ public class Window extends FrameLayout {
 		return decorations;
 	}
 
-    public void updateMaximizeBtnBackground () {
-        View maximize = getSystemDecorations().findViewById(R.id.maximize);
-        maximize.setBackgroundResource(R.drawable.ic_action_action_settings_overscan);
+    public void umi () {
+        getSystemDecorations().findViewById(R.id.maximize).setBackgroundResource(R.drawable.ic_action_action_settings_overscan);
     }
 
 	/**

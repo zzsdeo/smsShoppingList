@@ -75,8 +75,31 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
+        /*if (getWindow(StandOutWindow.DEFAULT_ID) != null & getWindow(StandOutWindow.DEFAULT_ID).visibility != Window.VISIBILITY_GONE) {
+            closeAll();
+            Intent i = new Intent(getApplicationContext(), StandOutActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+        }*/
+
+       /* if (getWindow(StandOutWindow.DEFAULT_ID) != null) {
+            boolean gone = false;
+            if (getWindow(StandOutWindow.DEFAULT_ID).visibility == Window.VISIBILITY_GONE) {
+                gone = true;
+            }
+            closeAll();
+            //Intent i = new Intent(getApplicationContext(), StandOutActivity.class);
+            //i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //startActivity(i);
+            if (gone) {
+                StandOutWindow.hide(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+            } else {
+                Intent i = new Intent(getApplicationContext(), StandOutActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            }
+        }*/
         if (getWindow(StandOutWindow.DEFAULT_ID) != null) {
-            getWindow(StandOutWindow.DEFAULT_ID).updateMaximizeBtnBackground();
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 updateViewLayout(StandOutWindow.DEFAULT_ID, new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
                         layoutPreferences.getInt("layout_land_width", 500),
@@ -93,6 +116,32 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
                         100, 100));
             }
         }
+    }
+
+    @Override
+    public boolean onUpdate(int id, Window window, StandOutLayoutParams params) {
+        window.findViewById(R.id.maximize).setBackgroundResource(R.drawable.ic_action_action_settings_overscan);
+        return false;
+    }
+
+    @Override
+    public boolean onShow(int id, Window window) {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            updateViewLayout(StandOutWindow.DEFAULT_ID, new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
+                    layoutPreferences.getInt("layout_land_width", 500),
+                    layoutPreferences.getInt("layout_land_height", 500),
+                    layoutPreferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION),
+                    100, 100));
+        } else {
+            updateViewLayout(StandOutWindow.DEFAULT_ID, new StandOutLayoutParams(StandOutWindow.DEFAULT_ID,
+                    layoutPreferences.getInt("layout_port_width", 500),
+                    layoutPreferences.getInt("layout_port_height", 500),
+                    layoutPreferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION),
+                    100, 100));
+        }
+        return false;
     }
 
     @Override
