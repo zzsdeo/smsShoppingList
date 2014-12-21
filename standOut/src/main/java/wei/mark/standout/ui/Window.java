@@ -516,10 +516,6 @@ public class Window extends FrameLayout {
 		return decorations;
 	}
 
-    public void umi () {
-        getSystemDecorations().findViewById(R.id.maximize).setBackgroundResource(R.drawable.ic_action_action_settings_overscan);
-    }
-
 	/**
 	 * Implement StandOut specific additional functionalities.
 	 * 

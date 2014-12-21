@@ -17,6 +17,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Display;
@@ -1203,8 +1204,18 @@ public abstract class StandOutWindow extends Service {
 						@Override
 						public void onAnimationEnd(Animation animation) {
 							// remove the window from the window manager
-							mWindowManager.removeView(window);
-							window.visibility = Window.VISIBILITY_GONE;
+                            //TODO < мои изменения
+                            Handler handler = new Handler();
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mWindowManager.removeView(window);
+                                    window.visibility = Window.VISIBILITY_GONE;
+                                }
+                            });
+                            //TODO мои изменения >
+							//mWindowManager.removeView(window);
+							//window.visibility = Window.VISIBILITY_GONE;
 						}
 					});
 					window.getChildAt(0).startAnimation(animation);
