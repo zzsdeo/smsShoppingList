@@ -32,7 +32,7 @@
                 android:contentDescription="@string/add" />
         </LinearLayout>
 
-        <ListView
+        <ru.zzsdeo.smsshoppinglist.DynamicListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/shoppingList" />

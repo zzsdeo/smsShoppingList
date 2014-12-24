@@ -33,7 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import wei.mark.standout.StandOutWindow;
 import wei.mark.standout.constants.StandOutFlags;
@@ -120,7 +122,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
         final AutoCompleteTextView addItemInputText = (AutoCompleteTextView) view.findViewById(R.id.addItemInputText);
         final ImageButton addItemBtn = (ImageButton) view.findViewById(R.id.addItemBtn);
-        final ListView shoppingList = (ListView) view.findViewById(R.id.shoppingList);
+        final DynamicListView shoppingList = (DynamicListView) view.findViewById(R.id.shoppingList);
 
         addItemInputText.setTextColor(mainPreferences.getInt("font_color", -1));
 
@@ -188,6 +190,7 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
         mCursorLoader.forceLoad();
         adapter = new ShoppingListCursorAdapter(this, null, 0);
+        shoppingList.setData(cursorToArrayList(c2));
         shoppingList.setAdapter(adapter);
 	}
 
@@ -469,5 +472,29 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             result = getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    private ArrayList<Map> cursorToArrayList (Cursor cursor) {
+        ArrayList<Map> al = new ArrayList<Map>();
+        Map<String, Object> m = new HashMap<String, Object>();
+        Object o = new Object();
+        String[] columnNames = cursor.getColumnNames();
+        if (cursor.moveToFirst()) {
+            do {
+                for (String cn : columnNames) {
+                    switch (cursor.getType(cursor.getColumnIndex(cn))) {
+                        case Cursor.FIELD_TYPE_STRING:
+                            o = cursor.getString(cursor.getColumnIndex(cn));
+                            break;
+                        case Cursor.FIELD_TYPE_INTEGER:
+                            o = cursor.getInt(cursor.getColumnIndex(cn));
+                            break;
+                    }
+                    m.put(cn, o);
+                }
+                al.add(m);
+            } while (cursor.moveToNext());
+        }
+        return al;
     }
 }
