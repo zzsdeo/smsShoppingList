@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -374,10 +375,46 @@ public class DynamicListView extends ListView {
     }
 
     private void swapElements(Cursor cursor, int indexOne, int indexTwo) {
-        Map<String, Object> m = new HashMap<String, Object>();
-        cursor.moveToPosition(indexOne);
-        long temp = cursor.getLong(cursor.getColumnIndex(ListTable.COLUMN_ID));
-        getContext().getContentResolver().up
+        ContentValues oneValues = new ContentValues(),
+                      twoValues = new ContentValues();
+        long oneId, twoId;
+        String[] columnNames = cursor.getColumnNames();
+        if (cursor.moveToPosition(indexOne)) {
+            oneId = cursor.getLong(cursor.getColumnIndex(ListTable.COLUMN_ID));
+            for (String cn : columnNames) {
+                if (!cn.equals(ListTable.COLUMN_ID)) {
+                    switch (cursor.getType(cursor.getColumnIndex(cn))) {
+                        case Cursor.FIELD_TYPE_STRING:
+                            oneValues.put(cn, cursor.getString(cursor.getColumnIndex(cn)));
+                            break;
+                        case Cursor.FIELD_TYPE_INTEGER:
+                            oneValues.put(cn, cursor.getInt(cursor.getColumnIndex(cn)));
+                            break;
+                    }
+                }
+            }
+        } else {
+            return;
+        }
+        if (cursor.moveToPosition(indexTwo)) {
+            twoId = cursor.getLong(cursor.getColumnIndex(ListTable.COLUMN_ID));
+            for (String cn : columnNames) {
+                if (!cn.equals(ListTable.COLUMN_ID)) {
+                    switch (cursor.getType(cursor.getColumnIndex(cn))) {
+                        case Cursor.FIELD_TYPE_STRING:
+                            twoValues.put(cn, cursor.getString(cursor.getColumnIndex(cn)));
+                            break;
+                        case Cursor.FIELD_TYPE_INTEGER:
+                            twoValues.put(cn, cursor.getInt(cursor.getColumnIndex(cn)));
+                            break;
+                    }
+                }
+            }
+        } else {
+            return;
+        }
+        getContext().getContentResolver().update(ShoppingListContentProvider.CONTENT_URI_LIST, oneValues, ListTable.COLUMN_ID + "=" + twoId, null);
+
 
         Map temp = arrayList.get(indexOne);
         arrayList.set(indexOne, arrayList.get(indexTwo));
