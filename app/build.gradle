@@ -30,4 +30,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile project(':standOut')
     compile project(':acra-4.5.0')
+    compile project(':dragSortListView')
 }

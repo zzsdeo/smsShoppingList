@@ -14,7 +14,9 @@ import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-public class ShoppingListCursorAdapter extends CursorAdapter {
+import com.mobeta.android.dslv.DragSortCursorAdapter;
+
+public class ShoppingListCursorAdapter extends DragSortCursorAdapter {
 
     private LayoutInflater mInflater;
     SharedPreferences preferences, mainPreferences;
