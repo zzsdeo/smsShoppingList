@@ -21,7 +21,7 @@ public class SmsParser extends IntentService {
         String sms = intent.getExtras().getString("SMS");
         String action = intent.getExtras().getString("action");
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String[] parsedSms = sms.split(settings.getString("divider_setting", ","));
+        String[] parsedSms = sms.split("\\" + settings.getString("divider_setting", ","));
 
         if (action.equals("check_and_insert")) {
             if (checkSms(parsedSms)) {
