@@ -19,11 +19,10 @@ public class SmsParser extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         String sms = intent.getExtras().getString("SMS");
-        String action = intent.getExtras().getString("action");
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String[] parsedSms = sms.split("\\" + settings.getString("divider_setting", ","));
 
-        if (action.equals("check_and_insert")) {
+        if (intent.getAction().equals("check_and_insert")) {
             if (checkSms(parsedSms)) {
                 insertSmsInDb(parsedSms);
                 StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
@@ -33,7 +32,7 @@ public class SmsParser extends IntentService {
             }
         }
 
-        if (action.equals("insert")) {
+        if (intent.getAction().equals("insert")) {
             insertSmsInDb(parsedSms);
             StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
         }

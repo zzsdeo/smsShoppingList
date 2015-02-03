@@ -25,7 +25,6 @@ public class SmsReceiver extends BroadcastReceiver {
 
         Bundle smsBundle = new Bundle();
         smsBundle.putString("SMS", sb.toString());
-        smsBundle.putString("action", "check_and_insert");
-        context.startService(new Intent(context, SmsParser.class).putExtras(smsBundle));
+        context.startService(new Intent(context, SmsParser.class).putExtras(smsBundle).setAction("check_and_insert"));
     }
 }

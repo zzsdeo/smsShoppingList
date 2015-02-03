@@ -68,8 +68,7 @@ public class ImportFromSmsActivity extends Activity {
                 if (c.moveToPosition(i)) {
                     Bundle smsBundle = new Bundle();
                     smsBundle.putString("SMS", c.getString(c.getColumnIndex("body")));
-                    smsBundle.putString("action", "insert");
-                    startService(new Intent(getApplicationContext(), SmsParser.class).putExtras(smsBundle));
+                    startService(new Intent(getApplicationContext(), SmsParser.class).putExtras(smsBundle).setAction("insert"));
                     finish();
                 }
             }
