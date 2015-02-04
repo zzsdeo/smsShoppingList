@@ -44,6 +44,9 @@
         <activity
             android:name="ru.zzsdeo.smsshoppinglist.ImportFromSmsActivity"
             android:label="@string/import_from_sms" />
+        <activity
+            android:name="ru.zzsdeo.smsshoppinglist.ImportFromWebActivity"
+            android:label="@string/import_from_web" />
 
         <service android:name="ru.zzsdeo.smsshoppinglist.FloatingWindow" >
         </service>

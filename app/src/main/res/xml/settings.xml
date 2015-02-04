@@ -19,6 +19,10 @@
             android:title="@string/divider_setting"
             android:summary="@string/divider_setting_summary"
             android:defaultValue=","/>
+        <EditTextPreference
+            android:key="email"
+            android:title="@string/email_setting"
+            android:summary="@string/email_setting_summary"/>
         <CheckBoxPreference
             android:key="acra.enable"
             android:title="@string/pref_enable_acra"

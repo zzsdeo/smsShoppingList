@@ -5,11 +5,21 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.DialogPreference;
+import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.provider.SyncStateContract;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.util.Patterns;
+
+import java.util.regex.Pattern;
 
 public class SettingsFragment extends PreferenceFragment {
 
@@ -70,6 +80,24 @@ public class SettingsFragment extends PreferenceFragment {
                 DialogFragment df = new SeekBarDialog();
                 df.show(getFragmentManager(), "seekBarDialog");
                 return true;
+            }
+        });
+        EditTextPreference emailPreference = (EditTextPreference) findPreference("email");
+        emailPreference.setSummary(emailPreference.getText() + "\n" + getString(R.string.email_setting_summary));
+        emailPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                String email = o.toString();
+                boolean matches = Patterns.EMAIL_ADDRESS.matcher(email).matches();
+                if (!matches & !email.equals("")) {
+                    Spannable summary = new SpannableString("'" + o.toString() + "'" + "\n" + getString(R.string.email_setting_error));
+                    summary.setSpan(new ForegroundColorSpan(Color.RED), 0, summary.length(), 0);
+                    preference.setSummary(summary);
+                    return false;
+                } else {
+                    preference.setSummary(o.toString() + "\n" + getString(R.string.email_setting_summary));
+                    return true;
+                }
             }
         });
     }

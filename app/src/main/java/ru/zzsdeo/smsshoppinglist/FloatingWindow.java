@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Patterns;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -79,8 +80,8 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 getWindow(StandOutWindow.DEFAULT_ID).edit()
                         .setPosition(
-                                layoutPreferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
-                                layoutPreferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION)
+                                layoutPreferences.getInt("layout_land_x", 0),
+                                layoutPreferences.getInt("layout_land_y", 0)
                         )
                         .setSize(
                                 layoutPreferences.getInt("layout_land_width", 500),
@@ -90,8 +91,8 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             } else {
                 getWindow(StandOutWindow.DEFAULT_ID).edit()
                         .setPosition(
-                                layoutPreferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
-                                layoutPreferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION)
+                                layoutPreferences.getInt("layout_port_x", 0),
+                                layoutPreferences.getInt("layout_port_y", 0)
                         )
                         .setSize(
                                 layoutPreferences.getInt("layout_port_width", 500),
@@ -197,15 +198,15 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
             return new StandOutLayoutParams(id,
                     layoutPreferences.getInt("layout_land_width", 500),
                     layoutPreferences.getInt("layout_land_height", 500),
-                    layoutPreferences.getInt("layout_land_x", StandOutLayoutParams.AUTO_POSITION),
-                    layoutPreferences.getInt("layout_land_y", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_land_x", 0),
+                    layoutPreferences.getInt("layout_land_y", 0),
                     100, 100);
         } else {
             return new StandOutLayoutParams(id,
                     layoutPreferences.getInt("layout_port_width", 500),
                     layoutPreferences.getInt("layout_port_height", 500),
-                    layoutPreferences.getInt("layout_port_x", StandOutLayoutParams.AUTO_POSITION),
-                    layoutPreferences.getInt("layout_port_y", StandOutLayoutParams.AUTO_POSITION),
+                    layoutPreferences.getInt("layout_port_x", 0),
+                    layoutPreferences.getInt("layout_port_y", 0),
                     100, 100);
         }
 	}
@@ -414,6 +415,26 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
                 Intent i = new Intent (getApplicationContext(), ImportFromSmsActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
+            }
+        }));
+
+        items.add(new DropDownListItem(android.R.drawable.ic_menu_share,
+                getString(R.string.import_from_web), new Runnable() {
+
+            @Override
+            public void run() {
+                String email = mainPreferences.getString("email", "");
+                if (!email.equals("")) {
+                    if (Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        Intent i = new Intent(getApplicationContext(), ImportFromWebActivity.class);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(FloatingWindow.this, getString(R.string.email_setting_error), Toast.LENGTH_LONG).show();
+                    }
+                }  else {
+                    Toast.makeText(FloatingWindow.this, getString(R.string.add_email_in_settings), Toast.LENGTH_LONG).show();
+                }
             }
         }));
 

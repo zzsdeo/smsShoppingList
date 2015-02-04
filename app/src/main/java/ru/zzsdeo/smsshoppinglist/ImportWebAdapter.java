@@ -2,15 +2,18 @@ package ru.zzsdeo.smsshoppinglist;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ImportWebAdapter extends BaseAdapter {
 
@@ -68,11 +71,28 @@ public class ImportWebAdapter extends BaseAdapter {
             holder = (ViewHolder) rowView.getTag();
         }
 
-        String name = mObjects.get(position).loadLabel(mContext.getPackageManager()).toString();
-        holder.textView.setText(name);
-        new ImageFetcher(name, holder.imageView, mObjects.get(position)).execute();
+        SimpleDateFormat sdf = new SimpleDateFormat("mm.dd.yy HH:mm");
+        JSONObject jo = (JSONObject) getItem(i);
+        try {
+            Date date = new Date(jo.getLong(ImportFromWebActivity.JSON_TAG_CREATED_AT));
+            holder.textView1.setText(sdf.format(date));
+            if (jo.getInt(ImportFromWebActivity.JSON_TAG_HAS_READ) == 0) {
+                holder.textView2.setTypeface(null, Typeface.BOLD);
+            } else {
+                holder.textView2.setTypeface(null, Typeface.NORMAL);
+            }
+            String list = jo.getString(ImportFromWebActivity.JSON_TAG_LIST);
+            holder.textView2.setText(list.replaceAll("\\^", ", "));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return rowView;
+    }
+
+    @Override
+    public boolean hasStableIds() {
+        return true;
     }
 
     private static class ViewHolder {
