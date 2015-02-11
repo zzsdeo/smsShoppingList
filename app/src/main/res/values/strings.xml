@@ -47,11 +47,12 @@
     <string name="minimize_autostart_title">Автозапуск в свернутом виде</string>
     <string name="minimize_autostart_summary">При получении SMS со списком покупок окно приложения будет запускаться в свернутом виде.</string>
     <string name="import_from_web">Получить с сервера</string>
-    <string name="loading_lists">Загрузка списка. Подождите…</string>
+    <string name="loading">Загрузка…</string>
     <string name="no_lists_found">Списки покупок отсутствуют</string>
     <string name="error">Ошибка!\n</string>
     <string name="email_setting">E-mail</string>
     <string name="email_setting_summary">Для получения списка покупок с сервера</string>
     <string name="email_setting_error">Адрес e-mail указан не верно!\nУкажите корректный адрес.</string>
     <string name="add_email_in_settings">Введите адрес e-mail в настройках приложения.</string>
+    <string name="deleting">Удаление…</string>
 </resources>

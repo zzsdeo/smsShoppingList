@@ -71,7 +71,7 @@ public class ImportWebAdapter extends BaseAdapter {
             holder = (ViewHolder) rowView.getTag();
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("mm.dd.yy HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yy HH:mm");
         JSONObject jo = (JSONObject) getItem(i);
         try {
             Date date = new Date(jo.getLong(ImportFromWebActivity.JSON_TAG_CREATED_AT));

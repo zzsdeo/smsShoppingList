@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -31,7 +30,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,9 +39,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import wei.mark.standout.StandOutWindow;
 
@@ -55,8 +52,10 @@ public class ImportFromWebActivity extends Activity {
     public static final String JSON_TAG_CREATED_AT = "created_at";
     public static final String JSON_TAG_HAS_READ = "has_read";
     public static final String JSON_TAG_SUCCESS = "success";
+    public static final String JSON_TAG_MESSAGE = "message";
     private static final String URL_TO_JSON = "http://shoppinglist.mamarada.su/get_all_lists.php?email=";
     private static final String URL_TO_MARK_LIST_AS_READ = "http://shoppinglist.mamarada.su/mark_list_as_read.php";
+    private static final String URL_TO_DELETE_LIST = "http://shoppinglist.mamarada.su/delete_list.php";
     private SharedPreferences mainPreferences;
 
     @Override
@@ -102,7 +101,7 @@ public class ImportFromWebActivity extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
             dialog = new ProgressDialog(ImportFromWebActivity.this);
-            dialog.setMessage(getString(R.string.loading_lists));
+            dialog.setMessage(getString(R.string.loading));
             dialog.setIndeterminate(false);
             dialog.setCancelable(false);
             dialog.show();
@@ -123,11 +122,6 @@ public class ImportFromWebActivity extends Activity {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(content));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        try {
-                            TimeUnit.SECONDS.sleep(5);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         builder.append(line);
                     }
                 } else {
@@ -188,23 +182,7 @@ public class ImportFromWebActivity extends Activity {
                                 switch (menuItem.getItemId()) {
                                     case R.id.itemDelete:
                                         long[] id = list.getCheckedItemIds();
-                                        if (id.length != 0) {
-                                            /*for (long l : id) {
-                                                getContentResolver().delete(ShoppingListContentProvider.CONTENT_URI_PRODUCTS, ProductsTable.COLUMN_ID + "=" + l, null);
-                                            }*/
-                                            try {
-                                                JSONArray ja = jsonObject.getJSONArray(JSON_TAG_LISTS);
-                                                for (long l : id) {
-                                                    for (int i = 0; i < ja.length(); i++) {
-                                                        if (((JSONObject) ja.get(i)).getLong(JSON_TAG_ID) == l) {
-                                                            ja.remove(i);
-                                                        }
-                                                    }
-                                                }
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
+                                        new DeleteList().execute(Arrays.toString(id));
                                         actionMode.finish();
                                         return true;
                                     case R.id.selectAll:
@@ -268,11 +246,67 @@ public class ImportFromWebActivity extends Activity {
         }
     }
 
-    private class DeleteList extends AsyncTask<Long, Void, Void> {
+    private class DeleteList extends AsyncTask<String, Void, JSONObject> {
+
+        private ProgressDialog dialog;
 
         @Override
-        protected Void doInBackground(Long... longs) {
-            return null;
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(ImportFromWebActivity.this);
+            dialog.setMessage(getString(R.string.deleting));
+            dialog.setIndeterminate(false);
+            dialog.setCancelable(false);
+            dialog.show();
+        }
+
+        @Override
+        protected JSONObject doInBackground(String... strings) {
+            StringBuilder builder = new StringBuilder();
+            HttpClient client = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(URL_TO_DELETE_LIST);
+            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            nameValuePairs.add(new BasicNameValuePair("_id", strings[0]));
+            try {
+                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+                HttpResponse response = client.execute(httpPost);
+                StatusLine statusLine = response.getStatusLine();
+                int statusCode = statusLine.getStatusCode();
+                if (statusCode == 200) {
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
+                    }
+                } else {
+                    Log.e(GetShoppingListsFromWeb.class.toString(), "Failed to get JSON");
+                }
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                return new JSONObject(builder.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONObject jsonObject) {
+            dialog.dismiss();
+            try {
+                if (jsonObject.getInt(JSON_TAG_SUCCESS) == 0) {
+                    Toast.makeText(ImportFromWebActivity.this, getString(R.string.error) + jsonObject.getString(JSON_TAG_MESSAGE), Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ImportFromWebActivity.this.recreate();
         }
     }
 }
