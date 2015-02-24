@@ -55,4 +55,6 @@
     <string name="email_setting_error">Адрес e-mail указан не верно!\nУкажите корректный адрес.</string>
     <string name="add_email_in_settings">Введите адрес e-mail в настройках приложения.</string>
     <string name="deleting">Удаление…</string>
+    <string name="error_loading">Ошибка получения списка</string>
+    <string name="new_shopping_list_from_web">Вам отправлен новый список.\nНажмите для получения…</string>
 </resources>

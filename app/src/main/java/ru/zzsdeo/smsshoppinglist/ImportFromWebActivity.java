@@ -23,7 +23,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
@@ -37,7 +36,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,14 +59,14 @@ public class ImportFromWebActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+        onCloseActivity();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+                onCloseActivity();
                 finish();
                 return true;
             default:
@@ -127,8 +125,6 @@ public class ImportFromWebActivity extends Activity {
                 } else {
                     Log.e(GetShoppingListsFromWeb.class.toString(), "Failed to get JSON");
                 }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -143,84 +139,88 @@ public class ImportFromWebActivity extends Activity {
         @Override
         protected void onPostExecute(final JSONObject jsonObject) {
             dialog.dismiss();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    int success = -1;
-                    try {
-                        success = jsonObject.getInt(JSON_TAG_SUCCESS);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(ImportFromWebActivity.this, getString(R.string.error) + e.toString(), Toast.LENGTH_LONG).show();
-                    }
-                    if (success == 1) {
-                        final ListView list = (ListView) findViewById(R.id.smsList);
-                        final ImportWebAdapter adapter = new ImportWebAdapter(ImportFromWebActivity.this, jsonObject);
-                        list.setAdapter(adapter);
+            if (jsonObject != null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        int success = -1;
+                        try {
+                            success = jsonObject.getInt(JSON_TAG_SUCCESS);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(ImportFromWebActivity.this, getString(R.string.error) + e.toString(), Toast.LENGTH_LONG).show();
+                        }
+                        if (success == 1) {
+                            final ListView list = (ListView) findViewById(R.id.smsList);
+                            final ImportWebAdapter adapter = new ImportWebAdapter(ImportFromWebActivity.this, jsonObject);
+                            list.setAdapter(adapter);
 
-                        list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
-                        list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
-                            @Override
-                            public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
-                                actionMode.setTitle(getString(R.string.selected) + " " + list.getCheckedItemCount());
-                            }
-
-                            @Override
-                            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
-                                MenuInflater inflater = getMenuInflater();
-                                inflater.inflate(R.menu.context_menu, menu);
-                                return true;
-                            }
-
-                            @Override
-                            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
-                                switch (menuItem.getItemId()) {
-                                    case R.id.itemDelete:
-                                        long[] id = list.getCheckedItemIds();
-                                        new DeleteList().execute(Arrays.toString(id));
-                                        actionMode.finish();
-                                        return true;
-                                    case R.id.selectAll:
-                                        for (int i = adapter.getCount() - 1; i >= 0; i--) {
-                                            list.setItemChecked(i, true);
-                                        }
-                                        return true;
-                                    default:
-                                        return false;
+                            list.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+                            list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+                                @Override
+                                public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+                                    actionMode.setTitle(getString(R.string.selected) + " " + list.getCheckedItemCount());
                                 }
-                            }
 
-                            @Override
-                            public void onDestroyActionMode(ActionMode actionMode) {
-
-                            }
-                        });
-
-                        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                JSONObject jo = (JSONObject) adapter.getItem(i);
-                                try {
-                                    Bundle smsBundle = new Bundle();
-                                    smsBundle.putString("SMS", jo.getString(JSON_TAG_LIST).replaceAll("\\^", mainPreferences.getString("divider_setting", ",") + " "));
-                                    startService(new Intent(getApplicationContext(), SmsParser.class).putExtras(smsBundle).setAction("insert"));
-                                    new MarkListAsRead().execute(l);
-                                    finish();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                @Override
+                                public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                                    MenuInflater inflater = getMenuInflater();
+                                    inflater.inflate(R.menu.context_menu, menu);
+                                    return true;
                                 }
-                            }
-                        });
-                    } else if (success == 0) {
-                        Toast.makeText(ImportFromWebActivity.this, getString(R.string.no_lists_found), Toast.LENGTH_LONG).show();
+
+                                @Override
+                                public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                                    switch (menuItem.getItemId()) {
+                                        case R.id.itemDelete:
+                                            long[] id = list.getCheckedItemIds();
+                                            new DeleteList().execute(Arrays.toString(id));
+                                            actionMode.finish();
+                                            return true;
+                                        case R.id.selectAll:
+                                            for (int i = adapter.getCount() - 1; i >= 0; i--) {
+                                                list.setItemChecked(i, true);
+                                            }
+                                            return true;
+                                        default:
+                                            return false;
+                                    }
+                                }
+
+                                @Override
+                                public void onDestroyActionMode(ActionMode actionMode) {
+
+                                }
+                            });
+
+                            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    JSONObject jo = (JSONObject) adapter.getItem(i);
+                                    try {
+                                        Bundle smsBundle = new Bundle();
+                                        smsBundle.putString("SMS", jo.getString(JSON_TAG_LIST).replaceAll("\\^", mainPreferences.getString("divider_setting", ",") + " "));
+                                        startService(new Intent(getApplicationContext(), SmsParser.class).putExtras(smsBundle).setAction("insert"));
+                                        new MarkListAsRead().execute(l);
+                                        finish();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                        } else if (success == 0) {
+                            Toast.makeText(ImportFromWebActivity.this, getString(R.string.no_lists_found), Toast.LENGTH_LONG).show();
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                Toast.makeText(ImportFromWebActivity.this, getString(R.string.error_loading), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -230,15 +230,11 @@ public class ImportFromWebActivity extends Activity {
         protected Void doInBackground(Long... longs) {
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(URL_TO_MARK_LIST_AS_READ);
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<>(1);
             nameValuePairs.add(new BasicNameValuePair("_id", String.valueOf(longs[0])));
             try {
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 httpClient.execute(httpPost);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -265,7 +261,7 @@ public class ImportFromWebActivity extends Activity {
             StringBuilder builder = new StringBuilder();
             HttpClient client = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(URL_TO_DELETE_LIST);
-            List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+            List<NameValuePair> nameValuePairs = new ArrayList<>(1);
             nameValuePairs.add(new BasicNameValuePair("_id", strings[0]));
             try {
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -283,8 +279,6 @@ public class ImportFromWebActivity extends Activity {
                 } else {
                     Log.e(GetShoppingListsFromWeb.class.toString(), "Failed to get JSON");
                 }
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -307,6 +301,14 @@ public class ImportFromWebActivity extends Activity {
                 e.printStackTrace();
             }
             ImportFromWebActivity.this.recreate();
+        }
+    }
+
+    private void onCloseActivity() {
+        if (getIntent().getExtras() == null) {
+            StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+        } else if (!getIntent().getExtras().getBoolean(GcmIntentService.FROM_NOTIFICATION, false)) {
+            StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
         }
     }
 }

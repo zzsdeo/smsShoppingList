@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -14,14 +15,14 @@ public class SettingsActivity extends Activity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+        startActivity(new Intent(this, StandOutActivity.class));
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                StandOutWindow.show(this, FloatingWindow.class, StandOutWindow.DEFAULT_ID);
+                startActivity(new Intent(this, StandOutActivity.class));
                 finish();
                 return true;
             default:

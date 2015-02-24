@@ -480,7 +480,9 @@ public class FloatingWindow extends StandOutWindow implements Loader.OnLoadCompl
 
     @Override
     public void onLoadComplete(Loader<Cursor> cursorLoader, Cursor cursor) {
-        adapter.swapCursor(cursor);
+        if (adapter != null) {
+            adapter.swapCursor(cursor);
+        }
     }
 
     private int getNavigationBarHeight(int orientation) {
